@@ -50,11 +50,11 @@ var v{T} >= 0;                     # Óleo complementar adquirido do mercado
 # FUNÇÃO OBJETIVO: Minimizar o Custo Total
 # ==============================================================================
 minimize Custo_Total:
-    sum{p in P, m in M, t in T} (PC[p,m] * z[p,m,t]) + 
-    sum{p in P, m in M, t in T} (GTC[p] * gx[p,m,t]) + 
-    sum{m in M, t in T} (CC * w[m,t]) + 
-    sum{r in R, t in T} (C_OGR[r] * ogr_x[r,t]) + 
-    sum{t in T} (v_cost[t] * v[t]);
+    sum{p in P, m in M, t in T} (PC[p,m] * z[p,m,t]) +   # Custos de fomento agrícola por matéria-prima
+    sum{p in P, m in M, t in T} (GTC[p] * gx[p,m,t]) +   # Custo de transporte de sementes (entrada)
+    sum{m in M, t in T} (CC * w[m,t]) +                  # Custos industriais de esmagamento por matéria-prima
+    sum{r in R, t in T} (C_OGR[r] * ogr_x[r,t]) +        # Custos de aquisição de OGR
+    sum{t in T} (v_cost[t] * v[t]);                      # Custo de compra externa de óleo complementar
 
 # ==============================================================================
 # RESTRIÇÕES DO SISTEMA
