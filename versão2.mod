@@ -1,8 +1,16 @@
 # ==============================================================================
-# MODELO DE OTIMIZAÇÃO DA CADEIA DE SUPRIMENTOS - PBIO (COM MÚLTIPLAS MATÉRIAS-PRIMAS E PERDAS)
+# MODELO DE OTIMIZAÇÃO DA CADEIA DE SUPRIMENTOS - PBIO (MÚLTIPLAS MATÉRIAS-PRIMAS E PERDAS)
 # ==============================================================================
 
-# Adicionando sugestão 6. Rendimento Fixo
+
+#======================================================================================
+# Adicionando sugestão 6 (Rendimento Variável) e Sugestão 7 (Perdas: Transporte, Armazenagem e Esmagamento)
+# 6. Rendimento fixo  Hoje  α=0,19  Na prática varia conforme umidade, qualidade, fornecedor, tecnologia
+# Pode ser modelado como: αm,t
+
+# 7. Não existem perdas O modelo assume eficiência de 100%. Sugestão Inserir perdas: transporte, armazenagem, esmagamento
+#=======================================================================================
+
 
 # CONJUNTOS (Índices)
 set T; # Períodos de tempo
@@ -13,7 +21,8 @@ set M; # Matérias-primas / Oleaginosas (Soja, Algodão, Macaúba, Girassol, Nab
 # PARÂMETROS
 param alfa{M};                     # Rendimento de óleo específico para cada matéria-prima m
 param beta_trans := 0.02;          # Percentual de perda física no transporte (2%)
-param beta_proc := 0.015;          # Percentual de perda física no esmagamento (1.5%)
+param beta_arm   := 0.01;          # Percentual de perda física na armazenagem/silos (1%)
+param beta_proc  := 0.015;         # Percentual de perda física no esmagamento industrial (1.5%)
 param gama{P, M, T};               # Produtividade agrícola da zona p para a matéria m no período t
 param AZ{P, T};                    # Tamanho médio dos lotes das famílias na zona p
 param Z_barra{P, M, T};            # Área máxima disponível para cultivo da matéria m na zona p
@@ -30,11 +39,11 @@ param CC;                          # Custo unitário de esmagamento na usina
 param C_OGR{R};                    # Custo unitário de aquisição de OGR
 param v_cost{T};                   # Custo de oportunidade para compra de óleo externo
 
-# VARIÁvEIS DE DECISÃO
+# VARIÁVEIS DE DECISÃO
 var z{P, M, T} >= 0;               # Área de terra alocada por matéria-prima
 var gx{P, M, T} >= 0;              # Volume de sementes transportadas por matéria-prima
 var ogr_x{R, T} >= 0;              # Volume de OGR adquirido
-var w{M, T} >= 0;                  # Total de sementes de cada matéria-prima trituradas na planta
+var w{M, T} >= 0;                  # Total de sementes líquidas de cada matéria-prima trituradas na planta (após armazenagem)
 var v{T} >= 0;                     # Óleo complementar adquirido do mercado
 
 # ==============================================================================
@@ -51,7 +60,7 @@ minimize Custo_Total:
 # RESTRIÇÕES DO SISTEMA
 # ==============================================================================
 
-# Restrição (2): Atendimento da Demanda (com rendimento específico e perdas industriais)
+# Restrição (2): Atendimento da Demanda (com rendimento específico e perdas de esmagamento)
 s.t. Atendimento_Demanda{t in T}:
     sum{m in M} (alfa[m] * (1 - beta_proc) * w[m,t]) + sum{r in R} ogr_x[r,t] + v[t] >= D[t];
 
@@ -67,11 +76,11 @@ s.t. Cumprimento_Selo_Social{t in T}:
 s.t. Balanco_Massa_Agricola{p in P, m in M, t in T}:
     gx[p,m,t] = (1 - beta_trans) * gama[p,m,t] * z[p,m,t];
 
-# Restrição (6): Balanço de Processamento Industrial por Matéria-Prima
-s.t. Balanco_Processamento{m in M, t in T}:
-    w[m,t] = sum{p in P} gx[p,m,t];
+# Restrição (6): Balanço de Processamento Industrial e Armazenagem (descontando quebra técnica nos silos)
+s.t. Balanco_Processamento_Armazenagem{m in M, t in T}:
+    w[m,t] = (1 - beta_arm) * sum{p in P} gx[p,m,t];
 
-# Restrição (7): Capacidade Industrial Total da Usina (Soma de todas as sementes)
+# Restrição (7): Capacidade Industrial Total da Usina (Soma de todas as sementes processadas)
 s.t. Capacidade_Industrial{t in T}:
     sum{m in M} w[m,t] <= Capacidade_Usina;
 
