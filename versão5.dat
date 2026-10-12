@@ -1,0 +1,123 @@
+# ==============================================================================
+# SEÇÃO DE DADOS (DATA) - Com os custos fixos estratégicos
+# ==============================================================================
+data;
+
+set T := 2024 2025;
+set P := polo_norteMG polo_semiarido;
+set R := rede_catadores_moc rede_urbana;
+set M := Soja Algodao Macauba Girassol Nabo_Forrageiro;
+
+param alfa :=
+    Soja            0.18
+    Algodao         0.15
+    Macauba         0.28
+    Girassol        0.40
+    Nabo_Forrageiro 0.35;
+
+param preco_biodiesel := 4500.0;
+param preco_glicerina := 1200.0;
+param rend_glicerina  := 0.10;
+param preco_carbono   := 50.0;
+
+param preco_farelo :=
+    Soja            800.0
+    Algodao         650.0
+    Macauba         500.0
+    Girassol        700.0
+    Nabo_Forrageiro 600.0;
+
+param rend_farelo :=
+    Soja            0.75
+    Algodao         0.55
+    Macauba         0.50
+    Girassol        0.50
+    Nabo_Forrageiro 0.45;
+
+param CC := 45.0; 
+param Capacidade_Usina := 150000.0;
+
+# Custos Fixos para abrir os polos agrícolas e redes OGR
+param Custo_Fixo_Polo :=
+    polo_norteMG    500000.0
+    polo_semiarido  400000.0;
+
+param Custo_Fixo_OGR :=
+    rede_catadores_moc 150000.0
+    rede_urbana        200000.0;
+
+param Cap_Descarga :=
+    2024 140000.0
+    2025 160000.0;
+
+param Cap_Armazenagem :=
+    2024 80000.0
+    2025 90000.0;
+
+param Cap_Frota_Caminhoes :=
+    2024 140000.0
+    2025 160000.0;
+
+param Cap_Carregamento :=
+    2024 130000.0
+    2025 150000.0;
+
+param C_OGR := 
+    rede_catadores_moc 110.0 
+    rede_urbana        125.0;
+
+param PC :=
+    [polo_norteMG, *]   := Soja 140.0 Algodao 160.0 Macauba 120.0 Girassol 150.0 Nabo_Forrageiro 130.0
+    [polo_semiarido, *] := Soja 155.0 Algodao 175.0 Macauba 135.0 Girassol 165.0 Nabo_Forrageiro 145.0;
+
+param GTC := polo_norteMG 18.0 polo_semiarido 25.0;
+
+param gama :=
+    [polo_norteMG, Soja, *]          := 2024 2.8  2025 3.1
+    [polo_norteMG, Algodao, *]       := 2024 2.2  2025 2.4
+    [polo_norteMG, Macauba, *]       := 2024 3.5  2025 3.8
+    [polo_norteMG, Girassol, *]      := 2024 1.5  2025 1.7
+    [polo_norteMG, Nabo_Forrageiro, *]:= 2024 1.8  2025 2.0
+    [polo_semiarido, Soja, *]        := 2024 2.1  2025 2.3
+    [polo_semiarido, Algodao, *]     := 2024 1.7  2025 1.9
+    [polo_semiarido, Macauba, *]     := 2024 2.9  2025 3.1
+    [polo_semiarido, Girassol, *]    := 2024 1.2  2025 1.3
+    [polo_semiarido, Nabo_Forrageiro, *]:= 2024 1.4  2025 1.5;
+
+param AZ :=
+    [polo_norteMG, *]   := 2024 12.0 2025 12.0
+    [polo_semiarido, *] := 2024 15.0 2025 15.0;
+
+param Z_barra :=
+    [polo_norteMG, Soja, *]          := 2024 30000.0 2025 35000.0
+    [polo_norteMG, Algodao, *]       := 2024 10000.0 2025 12000.0
+    [polo_norteMG, Macauba, *]       := 2024 5000.0  2025 6000.0
+    [polo_norteMG, Girassol, *]      := 2024 3000.0  2025 4000.0
+    [polo_norteMG, Nabo_Forrageiro, *]:= 2024 2000.0  2025 3000.0
+    [polo_semiarido, Soja, *]        := 2024 20000.0 2025 22000.0
+    [polo_semiarido, Algodao, *]     := 2024 8000.0  2025 9000.0
+    [polo_semiarido, Macauba, *]     := 2024 6000.0  2025 7000.0
+    [polo_semiarido, Girassol, *]    := 2024 3000.0  2025 35000.0
+    [polo_semiarido, Nabo_Forrageiro, *]:= 2024 3000.0  2025 35000.0;
+
+param D :=  
+    2024 95000.0 
+    2025 110000.0;
+
+param v_cost :=  
+    2024 480.0 
+    2025 510.0;
+
+param TF := 
+    2024 1800 
+    2025 2200;
+
+param OfertaOGR :=
+    [rede_catadores_moc, *] := 2024 90000.0 2025 100000.0
+    [rede_urbana, *]        := 2024 20000.0 2025 25000.0;
+
+param CompraMax :=  
+    2024 15000.0 
+    2025 20000.0;
+
+end;
