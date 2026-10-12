@@ -2,7 +2,7 @@
 # MODELO DE OTIMIZAÇÃO DA CADEIA DE SUPRIMENTOS - PBIO (COM MÚLTIPLAS MATÉRIAS-PRIMAS E PERDAS)
 # ==============================================================================
 
-# Adicionando sujestão 6. Rendimento Fixo
+# Adicionando sugestão 6. Rendimento Fixo
 
 # CONJUNTOS (Índices)
 set T; # Períodos de tempo
