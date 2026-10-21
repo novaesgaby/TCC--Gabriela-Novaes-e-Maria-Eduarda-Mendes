@@ -48,37 +48,53 @@ minimize Custo_Total:
 # ==============================================================================
 
 # Restrição (2): Atendimento da Demanda
+# A produção precisa cobrir exatamente a quantidade da demanda
 s.t. Atendimento_Demanda{t in T}:
     (alfa * w[t]) + sum{r in R} ogr_x[r,t] + v[t] >= D[t];
+# ================================================================================
 
 # Restrição (3): Limite de Área Agrícola Disponível
+# Não podemos plantar além da capacidade máxima do solo fértil
 s.t. Limite_Area_Disponivel{p in P, t in T}:
     z[p,t] <= Z_barra[p,t];
+# ================================================================================
 
 # Restrição (4): Cumprimento do Selo Biocombustível Social
+# Restrição garante o benefício discal do governo ao ajudar famílias no plantio 
 s.t. Cumprimento_Selo_Social{t in T}:
     sum{p in P} (z[p,t] / AZ[p,t]) >= TF[t];
+# ================================================================================
 
 # Restrição (5): Balanço de Massa Agrícola
+# Qtd de sementes que sai de um polo para a usina deve ser exatamento o resultado da área plantada multiplicada pela produtividade da terra
 s.t. Balanco_Massa_Agricola{p in P, t in T}:
     gx[p,t] = gama[p,t] * z[p,t];
+# ================================================================================
 
 # Restrição (6): Balanço de Processamento Industrial
+# Garante que o total de sementes que a usina decide esmagar é igual a soma das sementes que chegam
 s.t. Balanco_Processamento{t in T}:
     w[t] = sum{p in P} gx[p,t];
+# ================================================================================
 
 # Restrição (7): Capacidade Industrial da Usina
 s.t. Capacidade_Industrial{t in T}:
     w[t] <= Capacidade_Usina;
+# ================================================================================
 
 # Restrição (8): Percentual Mínimo de OGR (14%)
+# Por questões ambientais, a empresa é obrigada a usar 14% de óleos e gorduras na produção
 s.t. Percentual_Minimo_OGR{t in T}:
     sum{r in R} ogr_x[r,t] >= 0.14 * D[t];
+# ================================================================================
 
 # Restrição (9): Limite Máximo de Disponibilidade de OGR por Fornecedor
+# Não temos óleo infinito, o modelo não pode comprar mais do que o estoque disponível no fornecedor
 s.t. Disponibilidade_Max_OGR{r in R, t in T}:
     ogr_x[r,t] <= OfertaOGR[r,t];
+# ================================================================================
 
 # Restrição (10): Limite Máximo para Aquisição Externa de Óleo
+# Comprar óleo pronto de terceiro é caro, a restrição é importante para ter um teto máximo
 s.t. Teto_Compra_Externa{t in T}:
     v[t] <= CompraMax[t];
