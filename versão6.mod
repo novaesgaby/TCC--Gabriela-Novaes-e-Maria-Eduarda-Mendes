@@ -1,5 +1,5 @@
 # ==============================================================================
-# MODELO DE OTIMIZAÇÃO DA CADEIA DE SUPRIMENTOS - PBIO 
+# MODELO DE OTIMIZAÇÃO DA CADEIA DE SUPRIMENTOS - PBIO (VERSÃO 6)
 # ==============================================================================
 
 # CONJUNTOS (Índices)
