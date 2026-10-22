@@ -7,7 +7,8 @@
 # Adicionando sugestão 6 (Rendimento Variável) 
 # 6. Rendimento fixo  Hoje  α=0,19  Na prática varia conforme umidade, qualidade, fornecedor, tecnologia
 # Pode ser modelado como: αm,t
-# adicionando sugestão 7 (Perdas: Transporte, Armazenagem e Esmagamento)
+
+# Adicionando sugestão 7 (Perdas: Transporte, Armazenagem e Esmagamento)
 # 7. Não existem perdas O modelo assume eficiência de 100%. Inserir perdas: transporte, armazenagem, esmagamento
 #==============================================================================================
 
