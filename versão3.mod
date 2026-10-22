@@ -44,15 +44,15 @@ param C_OGR{R};                    # Custo unitário de aquisição de OGR
 param v_cost{T};                   # Custo de oportunidade para compra de óleo externo
 
 # VARIÁVEIS DE DECISÃO
-var z{P, M, T} >= 0;               # Área de terra alocada por matéria-prima
-var gx{P, M, T} >= 0;              # Volume de sementes transportadas por matéria-prima
-var ogr_x{R, T} >= 0;              # Volume de OGR adquirido
-var w{M, T} >= 0;                  # Total de sementes líquidas de cada matéria-prima trituradas na planta
-var v{T} >= 0;                     # Óleo complementar adquirido do mercado
+var z{P, M, T} >= 0;               # Área de terra alocada por matéria-prima (Qtd de hectares a plantar no polo p, da MP m, no ano t)
+var gx{P, M, T} >= 0;              # Volume de sementes que chegam na usina do polo p, da MP m, no ano t)
+var ogr_x{R, T} >= 0;              # Volume de OGR adquirido da rede r, no ano t
+var w{M, T} >= 0;                  # Total de sementes líquidas de cada matéria-prima trituradas na planta (após armazenagem) no ano t 
+var v{T} >= 0;                     # Volume de óleo pronto comprado de terceiro no ano t 
 
-# ==============================================================================
+# =============================================================================================================
 # FUNÇÃO OBJETIVO: Maximizar o Lucro Total da Cadeia (Receitas - Custos)
-# ==============================================================================
+# =============================================================================================================
 maximize Lucro_Total:
     # 1. RECEITAS
     # Receita com a venda do Biodiesel produzido internamente e óleo complementar comercializado
