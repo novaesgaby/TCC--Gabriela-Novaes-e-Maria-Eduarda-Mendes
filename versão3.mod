@@ -28,7 +28,7 @@ param Capacidade_Usina;            # Capacidade máxima de esmagamento na usina
 param OfertaOGR{R, T};             # Disponibilidade máxima de OGR por fonte
 param CompraMax{T};                # Limite máximo de compra externa de óleo
 
-# PARÂMETROS DE PREÇO DE VENDA E RECEITAS
+# PARÂMETROS DE PREÇO DE VENDA E RECEITAS (NOVOS PARÂMETROS)
 param preco_biodiesel;             # Preço unitário de venda do biodiesel/óleo principal
 param preco_farelo{M};             # Preço de venda do farelo gerado por tipo de semente
 param rend_farelo{M};              # Percentual de farelo obtido por tonelada esmagada
