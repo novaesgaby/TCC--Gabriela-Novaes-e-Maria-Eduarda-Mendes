@@ -1,5 +1,5 @@
 # ==============================================================================
-# MODELO DE OTIMIZAÇÃO DA CADEIA DE SUPRIMENTOS - PBIO (VERSÃO 4: LOGÍSTICA)
+# MODELO DE OTIMIZAÇÃO DA CADEIA DE SUPRIMENTOS - PBIO (VERSÃO 4)
 # ==============================================================================
 
 # CONJUNTOS (Índices)
