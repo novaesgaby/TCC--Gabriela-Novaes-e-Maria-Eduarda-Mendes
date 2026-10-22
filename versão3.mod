@@ -9,8 +9,8 @@
 # ============================================================================================================
 
 # CONJUNTOS (Índices)
-set T; # Períodos de tempo
-set P; # Zonas produtoras de oleaginosas
+set T; # Períodos de tempo (2024 e 2025)
+set P; # Zonas produtoras de oleaginosas (Norte de MG e Semiárido)
 set R; # Fontes de Óleos e Gorduras Residuais (OGR)
 set M; # Matérias-primas / Oleaginosas (Soja, Algodão, Macaúba, Girassol, Nabo)
 
