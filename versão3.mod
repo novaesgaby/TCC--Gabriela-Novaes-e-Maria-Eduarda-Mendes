@@ -53,6 +53,7 @@ var v{T} >= 0;                     # Volume de óleo pronto comprado de terceiro
 # =============================================================================================================
 # FUNÇÃO OBJETIVO: Maximizar o Lucro Total da Cadeia (Receitas - Custos)
 # =============================================================================================================
+
 maximize Lucro_Total:
     # 1. RECEITAS
     # Receita com a venda do Biodiesel produzido internamente e óleo complementar comercializado
