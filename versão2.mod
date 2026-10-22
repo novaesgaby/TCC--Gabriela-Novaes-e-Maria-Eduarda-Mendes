@@ -62,11 +62,20 @@ minimize Custo_Total:
 # ===============================================================================================================
 
 # Restrição (2): Atendimento da Demanda (com rendimento específico e perdas de esmagamento)
+
+# alfa[m] (rendimento do óleo específico da MP)
+# (1 - beta_proc) aplica o rendimento descontando a perda de 1,5
+# w[m,t] sementes na entrada do esmagamento.
+# (ogr_x) óleo de cozinha usado e (v) óleo de terceiros
+
 s.t. Atendimento_Demanda{t in T}:
-    sum{m in M} (alfa[m] * (1 - beta_proc) * w[m,t]) + sum{r in R} ogr_x[r,t] + v[t] >= D[t];
+    sum{m in M} (alfa[m] * (1 - beta_proc) * w[m,t]) +  
+    sum{r in R} ogr_x[r,t] + v[t] >= D[t];
 # ===============================================================================================================
 
-# Restrição (3): Limite de Área Agrícola Disponível por Cultura
+# Restrição (3): Limite de Área Agrícola Disponível por MP
+# A área que o modelo decide plantar (z) não pode ultrapassar a capacidade máxima de solo destinada aquela MP específica (Z_barra).
+
 s.t. Limite_Area_Disponivel{p in P, m in M, t in T}:
     z[p,m,t] <= Z_barra[p,m,t]
 # ===============================================================================================================
