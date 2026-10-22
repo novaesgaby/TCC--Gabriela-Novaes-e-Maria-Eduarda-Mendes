@@ -122,4 +122,4 @@ s.t. Disponibilidade_Max_OGR{r in R, t in T}:
 # Restrição (10)
 s.t. Teto_Compra_Externa{t in T}:
     v[t] <= CompraMax[t];
-# ==============================================================================================================
+
