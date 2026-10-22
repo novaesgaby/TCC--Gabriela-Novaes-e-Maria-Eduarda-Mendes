@@ -3,10 +3,10 @@
 # ==============================================================================
 
 # CONJUNTOS (Índices)
-set T; # Períodos de tempo
-set P; # Zonas produtoras de oleaginosas (Polos agrícolas)
+set T; # Períodos de tempo (2024 e 2025)
+set P; # Zonas produtoras de oleaginosas (Norte de MG e Semiárido)
 set R; # Fontes de Óleos e Gorduras Residuais (OGR)
-set M; # Matérias-primas / Oleaginosas
+set M; # Matérias-primas / Oleaginosas (Soja, Algodão, Macaúba, Girassol, Nabo)
 
 # PARÂMETROS AGRÍCOLAS E TÉCNICOS
 param alfa{M};                     # Rendimento de óleo por matéria-prima
@@ -82,53 +82,73 @@ maximize Lucro_Total:
         sum{r in R, t in T} (Custo_Fixo_OGR[r] * y_ogr[r,t])
     );
 
-# ==============================================================================
+# ===============================================================================================================
 # RESTRIÇÕES DO SISTEMA
-# ==============================================================================
+# ===============================================================================================================
+
+
 
 s.t. Atendimento_Demanda{t in T}:
     sum{m in M} (alfa[m] * (1 - beta_proc) * w[m,t]) + sum{r in R} ogr_x[r,t] + v[t] >= D[t];
+# ===============================================================================================================
+
+# Só existe plantação se o polo estiver aberto
+# Se o modelo decidir não abrir o polo (y_polo[p,t] = 0), o limite de plantio é multiplicado por zero, forçando a área plantada (z) a ser 0. 
+# Se o polo estiver aberto (y_polo[p,t] = 1), a área plantada pode crescer até atingir o teto máximo de terra disponível (Z_barra).
 
 s.t. Limite_Area_Disponivel{p in P, m in M, t in T}:
     z[p,m,t] <= Z_barra[p,m,t] * y_polo[p,t];
+# ===============================================================================================================
 
 s.t. Cumprimento_Selo_Social{t in T}:
     sum{p in P, m in M} (z[p,m,t] / AZ[p,t]) >= TF[t];
+# ===============================================================================================================
 
 s.t. Balanco_Massa_Agricola{p in P, m in M, t in T}:
     gx[p,m,t] = (1 - beta_trans) * gama[p,m,t] * z[p,m,t];
+# ===============================================================================================================
 
 # Balanço de Estoque no Primeiro Período (2024 - Sem estoque inicial)
 s.t. Balanco_Estoque_Inicial{m in M}:
     estoque_semente[m, 2024] = sum{p in P} gx[p, m, 2024] * (1 - beta_arm) - w[m, 2024];
+# ===============================================================================================================
 
 # Balanço de Estoque nos Períodos Seguintes (2025 em diante)
 s.t. Balanco_Estoque_Subsequente{m in M, t in T: t > 2024}:
     estoque_semente[m, t] = estoque_semente[m, t-1] 
                             + sum{p in P} gx[p, m, t] * (1 - beta_arm) 
                             - w[m, t];
+# ===============================================================================================================
 
+# A soma de todas as sementes enviadas para o esmagamento industrial no ano t não pode ultrapassar a capacidade
 s.t. Capacidade_Industrial{t in T}:
     sum{m in M} w[m,t] <= Capacidade_Usina;
+# ===============================================================================================================
 
 s.t. Percentual_Minimo_OGR{t in T}:
     sum{r in R} ogr_x[r,t] >= 0.14 * D[t];
+# ===============================================================================================================
 
 s.t. Disponibilidade_Max_OGR{r in R, t in T}:
     ogr_x[r,t] <= OfertaOGR[r,t] * y_ogr[r,t];
+# ===============================================================================================================
 
 s.t. Teto_Compra_Externa{t in T}:
     v[t] <= CompraMax[t];
+# ===============================================================================================================
 
 # Restrições Logísticas
 s.t. Limite_Descarga_Usina{t in T}:
     sum{p in P, m in M} gx[p,m,t] <= Cap_Descarga[t];
+# ===============================================================================================================
 
 s.t. Limite_Armazenagem_Silos{t in T}:
     sum{m in M} estoque_semente[m,t] <= Cap_Armazenagem[t];
+# ===============================================================================================================
 
 s.t. Limite_Frota_Caminhoes{t in T}:
     sum{p in P, m in M} gx[p,m,t] <= Cap_Frota_Caminhoes[t];
+# ===============================================================================================================
 
 s.t. Limite_Carregamento_Expedicao{t in T}:
     (sum{m in M} (alfa[m] * (1 - beta_proc) * w[m,t]) + sum{r in R} ogr_x[r,t] + v[t]) <= Cap_Carregamento[t];
