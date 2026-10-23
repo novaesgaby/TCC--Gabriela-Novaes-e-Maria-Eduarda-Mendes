@@ -117,10 +117,10 @@ s.t. Limite_Carregamento_Expedicao{t in T}:
     (sum{m in M} (alfa[m] * (1 - beta_proc) * w[m,t]) + sum{r in R} ogr_x[r,t] + v[t]) <= Cap_Carregamento[t];
 """
 
-with open("pbio_huang.mod", "w", encoding="utf-8") as f:
+with open("pbio.mod", "w", encoding="utf-8") as f:
     f.write(codigo_mod)
 
-print("-> Arquivo pbio_huang.mod criado com sucesso.")
+print("-> Arquivo pbio.mod criado com sucesso.")
 
 # ===============================================================================================================
 # PASSO 2: Gerar as Instâncias
@@ -270,9 +270,9 @@ end;
         f.write(conteudo_dat)
 
     # Executa o GLPK via subprocess (caso tenha o glpsol instalado)
-    # Exemplo: glpsol -m pbio_huang.mod -d instancia_1.dat -o resultado_1.txt
+    # Exemplo: glpsol -m pbio.mod -d instancia_1.dat -o resultado_1.txt
     try:
-        subprocess.run(["glpsol", "-m", "pbio_huang.mod", "-d", dat_file, "-o", out_file], 
+        subprocess.run(["glpsol", "-m", "pbio.mod", "-d", dat_file, "-o", out_file], 
                          check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         
         # Leitor simples para extrair o lucro do arquivo de saída do GLPK
