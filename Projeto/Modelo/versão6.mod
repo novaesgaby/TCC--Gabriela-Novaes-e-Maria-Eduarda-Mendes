@@ -50,10 +50,10 @@ param Custo_Estoque_Semente{M};    # Custo de armazenagem de sementes [R$/t]
 
 # VARIÁVEIS DE DECISÃO CONTÍNUAS
 var z{P, M, T} >= 0;               # Área de terra alocada por matéria-prima [ha]
-var gx{P, M, T} >= 0;              # Volume de sementes transportadas [t]
-var ogr_x{R, T} >= 0;              # Volume de OGR adquirido [t]
+var gx{P, M, T} >= 0;              # Volume de sementes transportadas dos polos para a usina [t]
+var ogr_x{R, T} >= 0;              # Volume de OGR adquirido das redes [t]
 var w{M, T} >= 0;                  # Total de sementes líquidas trituradas [t]
-var v{T} >= 0;                     # Óleo complementar adquirido do mercado [t]
+var v{T} >= 0;                     # Volume de Óleo complementar de terceiro [t]
 var estoque_semente{M, T} >= 0;    # Estoque de sementes armazenado [t]
 
 # VARIÁVEIS DE DECISÃO BINÁRIAS (MILP)
@@ -63,6 +63,7 @@ var y_ogr{R, T} binary;            # 1 se a rede de OGR r for contratada no per�
 # ==============================================================================
 # FUNÇÃO OBJETIVO: Maximizar o Lucro Total
 # ==============================================================================
+
 maximize Lucro_Total:
     # 1. RECEITAS TOTAIS
     sum{t in T} (preco_biodiesel * (sum{m in M} (alfa[m] * (1 - beta_proc) * w[m,t]) + sum{r in R} ogr_x[r,t] + v[t])) +
@@ -133,11 +134,12 @@ s.t. Disponibilidade_Max_OGR{r in R, t in T}:
     ogr_x[r,t] <= OfertaOGR[r,t] * y_ogr[r,t];
 # ===============================================================================================================
 
+# Limita a qtd máxima de óleo comprado pronto de terceiro
 s.t. Teto_Compra_Externa{t in T}:
     v[t] <= CompraMax[t];
 # ===============================================================================================================
 
-# Restrições Logísticas
+# Restrições Logísticas: limite de descarga / capacidade caminhões
 s.t. Limite_Descarga_Usina{t in T}:
     sum{p in P, m in M} gx[p,m,t] <= Cap_Descarga[t];
 # ===============================================================================================================
