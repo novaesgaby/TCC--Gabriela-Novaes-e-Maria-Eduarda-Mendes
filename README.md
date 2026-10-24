@@ -28,7 +28,8 @@ A modelagem foi construída de forma **incremental (6 versões)** para testar de
 ## 📁 Estrutura do Repositório
 
 ```text
-├── Modelo/             # Arquivos de modelagem matemática (.mod em MathProg/GLPK)
-├── Dados/               # Arquivos de dados de entrada (.dat)
-├── Instâncias/          # Instâncias e cenários para simulação em Python (.py)
-└── README.md           # Documentação do repositório
+📁 Projeto/
+├── 📁 Dados/               # Arquivos de dados de entrada (.dat)
+├── 📁 Instâncias/          # Instâncias e cenários para simulação em Python (.py)
+├── 📁 Modelo/              # Arquivos de modelagem matemática (.mod em MathProg/GLPK)
+└── 📄 README.md            # Documentação do repositório
