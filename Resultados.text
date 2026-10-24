@@ -1,9 +1,0 @@
-#Resultados 
-
-#Valor da Função Objetivo: R$ 353.309,77
-#25 variáveis de decisão (sendo 4 variáveis binárias) e 26 restrições operacionais completadas.
-
-#1. Alocação : O modelo concentrou todo o esmagamento e refino no centro estratégico `c1`, escoando a produção diretamente para a usina final `u1` (atendendo integralmente as demandas de 800 e 1000 unidades nos períodos t1 e t2).
-#2. Seleção de Insumos: A matéria-prima `p1` mostrou-se economicamente superior, anulando a compra do insumo `p2` em ambos os períodos.
-#3. Sustentabilidade e Inclusão Social: O modelo superou com folga o limite regulatório de inserção da agricultura familiar, integrando 42 famílias no primeiro período e 48 no segundo (o mínimo exigido era 10 e 15).
-#4. Análise de Gargalo (Preço Sombra): Os limites de capacidade de processamento e de terra operaram com folga, confirmando que o principal direcionador de custo atual do sistema é o custo marginal de transporte e atendimento direto da demanda em `u1`.
