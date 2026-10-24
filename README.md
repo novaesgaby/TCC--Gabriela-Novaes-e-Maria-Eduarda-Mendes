@@ -14,3 +14,21 @@ O projeto tem como foco o planejamento e a otimização da cadeia de suprimentos
 * **Orientador:** Prof. João Flávio de Freitas Almeida
 * **Coorientador:** Prof. Braulio Frances Barcelos
 * **Instituição:** Universidade Federal de Minas Gerais (UFMG) | Departamento de Engenharia de Produção (DEP)
+
+## 🎯 Objetivo do Projeto e Instâncias
+
+O objetivo principal é representar o comportamento determinístico e estocástico da cadeia de biodiesel em Minas Gerais.
+
+
+A modelagem foi construída de forma **incremental (6 versões)** para testar desde a formulação matemática básica até a complexidade real.
+
+* **Evolução do Modelo (`.mod` e `.dat`):** Transição de uma Programação Linear Mista (MILP) para um modelo estocástico incorporando restrições de multi-matéria-prima (soja, macaúba, girassol, OGR, etc.), incorporando perdas físicas (transporte, armazenagem, esmagamento), receitas de coprodutos (farelo, glicerina, CBIOs) e variáveis binárias de infraestrutura.
+* **Instâncias e Simulação em Python:** As instâncias criadas em Python teve como objetivo testar os cenários.
+
+## 📁 Estrutura do Repositório
+
+```text
+├── models/             # Arquivos de modelagem matemática (.mod em MathProg/GLPK)
+├── data/               # Arquivos de dados de entrada (.dat)
+├── instances/          # Instâncias e cenários para simulação em Python (py)
+└── README.md           # Documentação do repositório
