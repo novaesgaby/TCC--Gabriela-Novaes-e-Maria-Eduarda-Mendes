@@ -1,5 +1,5 @@
 <h1 align="center" style="font-weight: bold;">TCC PBio 💻</h1>
 
 <p align="center">
-  <b>Simple description of what your project do or how to use it.</b>
+  <b>Simulação e Otimização da Cadeia de Suprimentos de Biocombustíveis (PBio).</b>
 </p>
