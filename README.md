@@ -22,7 +22,7 @@ O objetivo principal é representar o comportamento determinístico e estocásti
 
 A modelagem foi construída de forma **incremental (6 versões)** para testar desde a formulação matemática básica até a complexidade real.
 
-* **Evolução do Modelo (`.mod` e `.dat`):** Transição de uma Programação Linear Mista (MILP) para um modelo estocástico incorporando restrições de multi-matéria-prima (soja, macaúba, girassol, OGR, etc.), incorporando perdas físicas (transporte, armazenagem, esmagamento), receitas de coprodutos (farelo, glicerina, CBIOs) e variáveis binárias de infraestrutura.
+* **Evolução do Modelo (`.mod`  e `.dat`):** Transição de uma Programação Linear Mista (MILP) para um modelo estocástico incorporando restrições de multi-matéria-prima (soja, macaúba, girassol, OGR, etc.), incorporando perdas físicas (transporte, armazenagem, esmagamento), receitas de coprodutos (farelo, glicerina, CBIOs) e variáveis binárias de infraestrutura.
 * **Instâncias e Simulação em Python:** As instâncias criadas em Python teve como objetivo testar os cenários.
 
 ## 📁 Estrutura do Repositório
