@@ -17,7 +17,7 @@ O projeto tem como foco o planejamento e a otimização da cadeia de suprimentos
 
 ## 🎯 Objetivo do Projeto
 
-O objetivo principal é representar o comportamento determinístico e estocástico da cadeia de biodiesel em Minas Gerais.
+O objetivo principal é representar o comportamento determinístico e estocástico da cadeia de Suprimentos de Biocombustível em Minas Gerais.
 
 
 A modelagem foi construída de forma **incremental (6 versões)** para testar desde a formulação matemática básica até a complexidade real.
