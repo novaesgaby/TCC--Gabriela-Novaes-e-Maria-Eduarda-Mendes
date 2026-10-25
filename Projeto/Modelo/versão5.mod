@@ -111,6 +111,7 @@ s.t. Balanco_Massa_Agricola{p in P, m in M, t in T}:
 
 # =======================================================================================
 
+# Restrição (6)
 s.t. Balanco_Processamento_Armazenagem{m in M, t in T}:
     w[m,t] = (1 - beta_arm) * sum{p in P} gx[p,m,t];
 
@@ -120,26 +121,34 @@ s.t. Capacidade_Industrial{t in T}:
     sum{m in M} w[m,t] <= Capacidade_Usina;
 # ====================================================================================
 
+# Restrição (8) estabelece o percentual mínimo de OGR(14%).
 s.t. Percentual_Minimo_OGR{t in T}:
     sum{r in R} ogr_x[r,t] >= 0.14 * D[t];
 
-# Restrição de OGR limitada pela Contratação da Rede (Big-M)
+# Restrição (9) garante a disponibilidade máxima de OGR.
+# Garante que a compra de OGR respeite o teto de oferta local de cada rede e só ocorra se a respectiva parceria for contratada (y_ogrr,t=1). 
 s.t. Disponibilidade_Max_OGR{r in R, t in T}:
     ogr_x[r,t] <= OfertaOGR[r,t] * y_ogr[r,t];
 
+# Restrição (10) limita a aquisição de óleo externo. Limita a dependência de fornecedores externos ao teto operacional fixado para o período. 
+# Limita a qtd máxima de óleo comprado pronto de terceiro
 s.t. Teto_Compra_Externa{t in T}:
     v[t] <= CompraMax[t];
 
-# Restrições Logísticas
+# Restrição (11) limita a capacidade de descarga na usina. Limita o fluxo físico diário/anual de recepção e moega na fábrica
+# Restrições Logísticas: limite de descarga / capacidade caminhões
 s.t. Limite_Descarga_Usina{t in T}:
     sum{p in P, m in M} gx[p,m,t] <= Cap_Descarga[t];
 
+# Restrição (12) limita a capacidade do Parque de Silos. Limita a quantidade máxima acumulada de sementes nos silos da planta. 
 s.t. Limite_Armazenagem_Silos{t in T}:
     sum{p in P, m in M} ((1 - beta_trans) * gama[p,m,t] * z[p,m,t]) <= Cap_Armazenagem[t];
 
+# Restrição (13) limita a capacidade da frota de caminhões. Limita o volume máximo de sementes transportadas das roças à fábrica pelo teto da frota disponível.
 s.t. Limite_Frota_Caminhoes{t in T}:
     sum{p in P, m in M} gx[p,m,t] <= Cap_Frota_Caminhoes[t];
 
+# Restrição (14) limita a capacidade de expedição e carregamento. Limita o volume total escoado de biodiesel expedido em carretas no carregamento da usina.
 s.t. Limite_Carregamento_Expedicao{t in T}:
     (sum{m in M} (alfa[m] * (1 - beta_proc) * w[m,t]) + sum{r in R} ogr_x[r,t] + v[t]) <= Cap_Carregamento[t];
 
