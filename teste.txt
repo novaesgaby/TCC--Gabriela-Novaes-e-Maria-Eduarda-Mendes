@@ -1,1 +1,79 @@
 📍✏️📝
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+import re
+from matplotlib.patches import Patch
+
+# Listas para armazenar os dados coletados das instâncias
+dados_instancias = []
+
+for i in range(1, 21):
+    # Classificando o porte de acordo com a mesma lógica do loop de execução
+    if i <= 6:
+        porte = "Pequeno"
+    elif i <= 14:
+        porte = "Médio"
+    else:
+        porte = "Grande"
+
+    # AJUSTE AQUI: Nome exato do arquivo de saída gerado pela Versão 5 Estocástica
+    out_file = f"resultado_v5_estocastica_{i}.txt"
+    
+    try:
+        with open(out_file, "r", encoding="utf-8", errors="ignore") as f:
+            conteudo = f.read()
+            # Procura pela linha do Objective gerada pelo GLPK (captura flexível de nome e formato científico/decimal)
+            match_obj = re.search(r"Objective:\s+([a-zA-Z_0-9]+)\s*=\s*([0-9\.e\+\-]+)", conteudo)
+            if match_obj:
+                lucro_val = float(match_obj.group(2))
+                dados_instancias.append({
+                    "Instancia": f"Inst. {i}",
+                    "ID": i,
+                    "Porte": porte,
+                    "Lucro": lucro_val
+                })
+    except Exception as e:
+        print(f"Não foi possível ler o arquivo {out_file}: {e}")
+
+# Verifica se os dados foram encontrados antes de plotar
+if len(dados_instancias) > 0:
+    # Configura o estilo do gráfico com o Seaborn
+    sns.set_theme(style="whitegrid")
+    plt.figure(figsize=(16, 6))
+
+    # Paleta coordenada em tons de azul (do claro ao escuro)
+    paleta_portes = {
+        "Pequeno": "#9ecae1",  # Azul claro
+        "Médio": "#4292c6",    # Azul médio
+        "Grande": "#08306b"    # Azul escuro
+    }
+
+    # Gráfico 1: Gráfico de barras por instância coloridas por tons de azul
+    plt.subplot(1, 2, 1)
+    x_inst = [d["Instancia"] for d in dados_instancias]
+    y_lucro_milhoes = [d["Lucro"] / 1e6 for d in dados_instancias]
+    c_portes = [paleta_portes[d["Porte"]] for d in dados_instancias]
+
+    bars = plt.bar(x_inst, y_lucro_milhoes, color=c_portes)
+    plt.title("Lucro Esperado Ótimo por Instância e Porte (Versão 5 Estocástica)", fontsize=12, fontweight='bold')
+    plt.xlabel("Instâncias", fontsize=10)
+    plt.ylabel("Lucro Esperado (Milhões de R$)", fontsize=10)
+    plt.xticks(rotation=45, ha='right')
+
+    # Legenda manual para as cores dos portes
+    legenda_elementos = [Patch(facecolor=cor, label=porte) for porte, cor in paleta_portes.items()]
+    plt.legend(handles=legenda_elementos, title="Porte da Instância")
+
+    # Gráfico 2: Histograma com Curva de Densidade (KDE) geral dos lucros em tons de azul
+    plt.subplot(1, 2, 2)
+    lucros_totais = [d["Lucro"] / 1e6 for d in dados_instancias]
+    sns.histplot(lucros_totais, kde=True, color="#2171b5", bins=8)
+    plt.title("Distribuição Geral do Lucro Esperado (27 Cenários)", fontsize=12, fontweight='bold')
+    plt.xlabel("Lucro Esperado (Milhões de R$)", fontsize=10)
+    plt.ylabel("Frequência", fontsize=10)
+
+    plt.tight_layout()
+    plt.show()
+else:
+    print("Nenhum dado de lucro foi encontrado nos arquivos de resultado. Certifique-se de que o solver executou com sucesso.")
