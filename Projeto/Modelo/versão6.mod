@@ -8,7 +8,7 @@ set P; # Zonas produtoras de oleaginosas (Norte de MG e Semiárido)
 set R; # Fontes de Óleos e Gorduras Residuais (OGR)
 set M; # Matérias-primas / Oleaginosas (Soja, Algodão, Macaúba, Girassol, Nabo)
 
-# PARÂMETROS AGRÍCOLAS E TÉCNICOS
+# PARÂMETROS AGRÍCOLAS 
 param alfa{M};                     # Rendimento de óleo por matéria-prima
 param beta_trans := 0.02;          # Perda física no transporte (2%)
 param beta_arm   := 0.01;          # Perda física na armazenagem (1%)
