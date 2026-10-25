@@ -14,7 +14,7 @@ O script está dividido em duas etapas principais:
 
 ---
 
-## 🛠️ Tecnologias, Bibliotecas e Funções Utilizadas
+## ⚙️ Bibliotecas e Funções Utilizadas
 
 O script faz uso de módulos do Python para gerenciar o sistema de arquivos.
 
