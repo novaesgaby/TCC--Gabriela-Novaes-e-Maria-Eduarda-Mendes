@@ -5,11 +5,11 @@
 data;
 
 # Conjuntos
-set T := 2024 2025;
+set T := 2024 2025;                                      # Horizonte de planejamento
 set P := polo_norteMG polo_semiarido;
 set R := rede_catadores_moc rede_urbana;
 set M := Soja Algodao Macauba Girassol Nabo_Forrageiro;
-set S := S1 S2 S3;
+set S := S1 S2 S3;                                       # Conjunto de cenários da árvore estocástica ($\omega$)
 
 # Probabilidade de cada cenário ocorrer (pi_omega)
 param pi :=
