@@ -4,7 +4,7 @@ import random
 
 # Versão considerando médio, pequeno e grande porte. Aplicado com o versão6.mod
 # ==========================================================================================
-# PASSO 1: Arquivo do modelo (.mod) - Mantido igual
+# PASSO 1: Arquivo do modelo (versão6.mod) 
 # =========================================================================================
 codigo_mod = """
 set T;
@@ -118,10 +118,10 @@ s.t. Limite_Carregamento_Expedicao{t in T}:
     (sum{m in M} (alfa[m] * (1 - beta_proc) * w[m,t]) + sum{r in R} ogr_x[r,t] + v[t]) <= Cap_Carregamento[t];
 """
 
-with open("pbio_huang.mod", "w", encoding="utf-8") as f:
+with open("pbio_versao6.mod", "w", encoding="utf-8") as f:
     f.write(codigo_mod)
 
-print("-> Arquivo pbio_huang.mod criado com sucesso.")
+print("-> Arquivo pbio_versao6.mod criado com sucesso.")
 
 # ===============================================================================================================
 # PASSO 2: Gerar as Instâncias por Porte (Pequeno, Médio e Grande)
@@ -289,7 +289,7 @@ end;
         f.write(conteudo_dat)
 
     try:
-        subprocess.run(["glpsol", "-m", "pbio_huang.mod", "-d", dat_file, "-o", out_file],
+        subprocess.run(["glpsol", "-m", "pbio_versao6.mod", "-d", dat_file, "-o", out_file],
                          check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
         lucro_str = "N/D"
