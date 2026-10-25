@@ -6,7 +6,7 @@
 
 ## 📝Construção - Instâncias
 
-A partir de estudos e pesquisas sobre métodos de geração de instâncias, foi desenvolvido um script integrado em **Python** capaz gerar dinamicamente arquivos de dados e acionar o resolvedor de código aberto **GLPK (GNU Linear Programming Kit)** de forma automatizada, foram gerados 20 instâncias para cada modelo.
+A partir de estudos e pesquisas sobre métodos de geração de instâncias, foi desenvolvido um script integrado em **Python** capaz gerar dinamicamente arquivos de dados e acionar o resolvedor de código aberto em **GLPK** de forma automatizada, foram gerados 20 instâncias para cada modelo.
 
 O script está dividido em duas etapas principais:
 1. **Definição do Modelo Matemático (`.mod`)**: É definido o modelo .mod que será gerado as 20 instâncias. 
