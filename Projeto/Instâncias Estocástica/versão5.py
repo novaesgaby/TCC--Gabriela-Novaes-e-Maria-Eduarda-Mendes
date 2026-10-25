@@ -253,8 +253,9 @@ for i in range(1, 21):
     v_25_str = " ".join([f"{s} {v_cost_cfg[s][1]:.2f}" for s in cenarios_cfg])
     gama_str = "\n".join(gama_cfg_linhas)
 
-    conteudo_dat = f"""# =============================================================================================================
-# SEÇÃO DE DADOS (DATA) - MODELO PBIO (VERSÃO 5) - Instância {i} ({porte})
+    conteudo_dat = f"""
+# =============================================================================================================
+# SEÇÃO DE DADOS (DATA) - MODELO PBIO (VERSÃO 5) - Instância - Modelo Estocástico
 # =============================================================================================================
 
 data;
