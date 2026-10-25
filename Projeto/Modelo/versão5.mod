@@ -85,24 +85,40 @@ maximize Lucro_Total:
 # RESTRIÇÕES DO SISTEMA
 # ==============================================================================
 
+# Restrição (2) se dá pelo atendimento da demanda. Garante que a soma do óleo extraído do esmagamento agrícola
+# (descontada a perda industrial proc), do OGR processado e do óleo de terceiros atinja a demanda total do período t.  
 s.t. Atendimento_Demanda{t in T}:
     sum{m in M} (alfa[m] * (1 - beta_proc) * w[m,t]) + sum{r in R} ogr_x[r,t] + v[t] >= D[t];
+# =====================================================================================
 
-# Restrição de Área limitada pela Abertura do Polo (Big-M)
+# Restrição (3), determina o limite da área agrícola. Só existe plantação se o polo estiver aberto
+# Se o modelo decidir não abrir o polo (y_polo[p,t] = 0), o limite de plantio é multiplicado por zero, forçando a área plantada (z) a ser 0. 
+# Se o polo estiver aberto (y_polo[p,t] = 1), a área plantada pode crescer até atingir o teto máximo de terra disponível (Z_barra).
 s.t. Limite_Area_Disponivel{p in P, m in M, t in T}:
     z[p,m,t] <= Z_barra[p,m,t] * y_polo[p,t];
+# ==========================================================================================
 
+# Restrição (4), leva em consideração o cumprimento do Selo Biocombustível Social.
+# O total de famílias inseridas no programa (calculado pela área total dividida pelo lote médio familiar) deve atingir a meta mínima. 
 s.t. Cumprimento_Selo_Social{t in T}:
     sum{p in P, m in M} (z[p,m,t] / AZ[p,t]) >= TF[t];
+# =========================================================================================
 
+# Restrição (5) determina o balanço de massa agrícola.
+# Estabelece que o volume total de sementes transportadas até a usina corresponde à colheita bruta abatida da taxa de perda em transporte.
 s.t. Balanco_Massa_Agricola{p in P, m in M, t in T}:
     gx[p,m,t] = (1 - beta_trans) * gama[p,m,t] * z[p,m,t];
+
+# =======================================================================================
 
 s.t. Balanco_Processamento_Armazenagem{m in M, t in T}:
     w[m,t] = (1 - beta_arm) * sum{p in P} gx[p,m,t];
 
+#  Restrição (7) determina a capacidade industrial de esmagamento
+# A soma de todas as sementes enviadas para o esmagamento industrial no ano t não pode ultrapassar a capacidade
 s.t. Capacidade_Industrial{t in T}:
     sum{m in M} w[m,t] <= Capacidade_Usina;
+# ====================================================================================
 
 s.t. Percentual_Minimo_OGR{t in T}:
     sum{r in R} ogr_x[r,t] >= 0.14 * D[t];
