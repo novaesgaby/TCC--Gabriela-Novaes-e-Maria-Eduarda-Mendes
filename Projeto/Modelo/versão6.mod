@@ -63,9 +63,12 @@ var y_ogr{R, T} binary;            # 1 se a rede de OGR r for contratada no per�
 # ================================================================================================================================
 # FUNÇÃO OBJETIVO: Maximizar o Lucro Total
 # ================================================================================================================================
+
 # O objetivo (1) é maximizar o lucro líquido total da rede operacional, logística e estratégica da usina. 
 # A função objetivo é composta pela diferença entre a receita bruta total e o somatório dos custos operacionais e fixos da cadeia.
 # ================================================================================================================================
+
+
 # As receitas são formadas por quatro parcelas:
 # A receita com a venda do biodiesel produzido e comercializado no mercado;
 # A receita obtida com a comercialização do farelo (coproduto do esmagamento agrícola destinado à ração animal);
