@@ -52,7 +52,7 @@ param GTC{P};                         # Custo de transporte de grãos [R$/t]
 param CC;                             # Custo de esmagamento/processamento [R$/t]
 param C_OGR{R};                       # Custo de aquisição de OGR [R$/t]
 param Custo_Estoque_Semente{M};       # Custo de armazenagem de sementes [R$/t]
-param penalidade_deficit := 10000.0;
+param penalidade_deficit := 8000.0;  # Penalidade pelo não atendimento da demanda
 
 # VARIÁVEIS DE 1º ESTÁGIO (Decisões Estruturais)
 var z{P, M, T} >= 0;                  # Área de terra alocada por matéria-prima [ha]
