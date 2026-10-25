@@ -8,7 +8,7 @@ if not shutil.which("glpsol"):
     print("Instalando glpk-utils...")
     subprocess.run("apt-get install -y glpk-utils", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
-# 2. Criação automática do arquivo .mod (Versão 5 Estocástica)
+# 2. Criação automática do arquivo .mod (Versão 5 Estocástica Completa com Comentários)
 codigo_mod_v5_estocastico = """
 # ========================================================================================================================
 # MODELO DE OTIMIZAÇÃO DA CADEIA DE SUPRIMENTOS - PBIO (VERSÃO 5 - Modelo Estocástico)
@@ -184,9 +184,9 @@ with open("pbio_estocastico_v5.mod", "w", encoding="utf-8") as f:
 
 print("-> Arquivo pbio_estocastico_v5.mod criado com sucesso.")
 
-# 3. Gerador das 20 Instâncias (Árvore de 27 Cenários com calibração proporcional correta)
+# 3. Gerador das 20 Instâncias (Árvore de 27 Cenários com variação dinâmica individual)
 random.seed(42)
-print("\nGerando 20 instâncias (Árvore de 27 Cenários) e executando o GLPSOL...")
+print("\nGerando 20 instâncias (Árvore de 27 Cenários com variação real) e executando o GLPSOL...")
 print(f"{'Instância':<12} | {'Porte':<8} | {'Lucro Esperado Ótimo (R$)':<28} | {'Estado'}")
 print("-" * 72)
 
@@ -202,18 +202,22 @@ fat_v  = {'Baixo': 0.85, 'Medio': 1.00, 'Alto': 1.25}
 for i in range(1, 21):
     if i <= 6:
         porte = "Pequeno"
-        fator = 0.6  # Fator equilibrado para instâncias pequenas
+        # Variação contínua e individual para cada instância pequena
+        fator = random.uniform(0.50, 0.70)
     elif i <= 14:
         porte = "Médio"
-        fator = 1.0  # Porte base original
+        # Variação contínua e individual para cada instância média
+        fator = random.uniform(0.90, 1.10)
     else:
         porte = "Grande"
-        fator = 1.4  # Porte expandido
+        # Variação contínua e individual para cada instância grande
+        fator = random.uniform(1.30, 1.50)
 
-    d2024_base = 75000.0 * fator
-    d2025_base = 88000.0 * fator
-    preco_bio = 4500.0
-    cap_usina = 190000.0 * fator
+    # Demanda com variação estocástica independente por instância
+    d2024_base = 95000.0 * fator * random.uniform(0.97, 1.03)
+    d2025_base = 110000.0 * fator * random.uniform(0.97, 1.03)
+    preco_bio = round(random.uniform(4300.0, 4800.0), 2)
+    cap_usina = 150000.0 * fator
 
     cenarios_cfg = []
     pi_cfg = {}
@@ -240,8 +244,8 @@ for i in range(1, 21):
                 fp = fat_p[p_niv]
                 for polo, mp_list in polos_dados:
                     for mp, b24, b25 in mp_list:
-                        gama_cfg_linhas.append(f"    [{polo}, {mp}, 2024, {s_nome}] := {round(b24 * fp, 2)}")
-                        gama_cfg_linhas.append(f"    [{polo}, {mp}, 2025, {s_nome}] := {round(b25 * fp, 2)}")
+                        gama_cfg_linhas.append(f"    [{polo}, {mp}, 2024, {s_nome}] := {round(b24 * fp * random.uniform(0.98, 1.02), 2)}")
+                        gama_cfg_linhas.append(f"    [{polo}, {mp}, 2025, {s_nome}] := {round(b25 * fp * random.uniform(0.98, 1.02), 2)}")
                 
                 s_idx += 1
 
@@ -253,9 +257,8 @@ for i in range(1, 21):
     v_25_str = " ".join([f"{s} {v_cost_cfg[s][1]:.2f}" for s in cenarios_cfg])
     gama_str = "\n".join(gama_cfg_linhas)
 
-    conteudo_dat = f"""
-# =============================================================================================================
-# SEÇÃO DE DADOS (DATA) - MODELO PBIO (VERSÃO 5) - Instância - Modelo Estocástico
+    conteudo_dat = f"""# =============================================================================================================
+# SEÇÃO DE DADOS (DATA) - MODELO PBIO (VERSÃO 5) - Modelo Estocástico - Instância {i} ({porte})
 # =============================================================================================================
 
 data;
@@ -311,8 +314,8 @@ param Cap_Descarga :=
     2025 {160000.0 * fator};
 
 param Cap_Armazenagem :=
-    2024 {120000.0 * fator}
-    2025 {140000.0 * fator};
+    2024 {200000.0 * fator}
+    2025 {220000.0 * fator};
 
 param Cap_Frota_Caminhoes :=
     2024 {140000.0 * fator}
@@ -348,16 +351,16 @@ param AZ :=
     [polo_semiarido, *] := 2024 15.0 2025 15.0;
 
 param Z_barra :=
-    [polo_norteMG, Soja, *]            := 2024 {40000.0 * fator} 2025 {45000.0 * fator}
-    [polo_norteMG, Algodao, *]         := 2024 {15000.0 * fator} 2025 {18000.0 * fator}
-    [polo_norteMG, Macauba, *]         := 2024 {8000.0 * fator}  2025 {10000.0 * fator}
-    [polo_norteMG, Girassol, *]        := 2024 {5000.0 * fator}  2025 {6000.0 * fator}
-    [polo_norteMG, Nabo_Forrageiro, *] := 2024 {4000.0 * fator}  2025 {5000.0 * fator}
-    [polo_semiarido, Soja, *]          := 2024 {30000.0 * fator} 2025 {35000.0 * fator}
-    [polo_semiarido, Algodao, *]       := 2024 {12000.0 * fator} 2025 {14000.0 * fator}
-    [polo_semiarido, Macauba, *]       := 2024 {10000.0 * fator} 2025 {12000.0 * fator}
-    [polo_semiarido, Girassol, *]      := 2024 {5000.0 * fator}  2025 {6000.0 * fator}
-    [polo_semiarido, Nabo_Forrageiro, *]:= 2024 {5000.0 * fator} 2025 {6000.0 * fator};
+    [polo_norteMG, Soja, *]            := 2024 {30000.0 * fator} 2025 {35000.0 * fator}
+    [polo_norteMG, Algodao, *]         := 2024 {10000.0 * fator} 2025 {12000.0 * fator}
+    [polo_norteMG, Macauba, *]         := 2024 {5000.0 * fator}  2025 {6000.0 * fator}
+    [polo_norteMG, Girassol, *]        := 2024 {3000.0 * fator}  2025 {4000.0 * fator}
+    [polo_norteMG, Nabo_Forrageiro, *] := 2024 {2000.0 * fator}  2025 {3000.0 * fator}
+    [polo_semiarido, Soja, *]          := 2024 {20000.0 * fator} 2025 {22000.0 * fator}
+    [polo_semiarido, Algodao, *]       := 2024 {8000.0 * fator}  2025 {9000.0 * fator}
+    [polo_semiarido, Macauba, *]       := 2024 {6000.0 * fator}  2025 {7000.0 * fator}
+    [polo_semiarido, Girassol, *]      := 2024 {3000.0 * fator}  2025 {3500.0 * fator}
+    [polo_semiarido, Nabo_Forrageiro, *]:= 2024 {3000.0 * fator} 2025 {3500.0 * fator};
 
 param TF := 2024 1800 2025 2200;
 
@@ -388,10 +391,11 @@ end;
                     for p in partes:
                         try:
                             val = float(p.replace(',', ''))
-                            lucro_str = f"R$ {val:,.2f}"
-                            break
+                            if val > 1000:
+                                lucro_str = f"R$ {val:,.2f}"
+                                break
                         except ValueError:
                             continue
         print(f"Instância {i:<2} ({porte:<8}) | {lucro_str:<28} | INTEGER OPTIMAL")
-    except Exception as e:
+    except Exception:
         print(f"Instância {i:<2} ({porte:<8}) | Falha na execução              | ERROR")
