@@ -4,7 +4,7 @@
 
 data;
 
-# Conjuntos
+# Conjuntos 
 set T := 2024 2025;                                      # Horizonte de planejamento
 set P := polo_norteMG polo_semiarido;
 set R := rede_catadores_moc rede_urbana;
