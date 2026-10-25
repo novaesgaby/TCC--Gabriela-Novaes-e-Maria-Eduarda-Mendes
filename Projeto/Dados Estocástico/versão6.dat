@@ -27,13 +27,13 @@ param alfa :=
     Nabo_Forrageiro 0.35;
 
 # Preços e receitas
-param preco_biodiesel := 4500.0;          # valor da venda unitária do biodiesel 
+param preco_biodiesel := 4500.0;          # valor da venda unitária do biodiesel R$ 4.500,00 por tonelada
 param preco_glicerina := 1200.0;          # valor de venda unitária do coproduto (glicerina)
 param rend_glicerina  := 0.10;            # rendimento da glicerina
 param preco_carbono   := 50.0;            # créditos de carbono gerados pelo processo 
 
 param preco_farelo :=
-    Soja            800.0                # preço de venda do farelo de cada matéria-prima 
+    Soja            800.0                # preço de venda do farelo de cada matéria-prima R$ 800,00 por tonelada
     Algodao         650.0
     Macauba         500.0
     Girassol        700.0
@@ -47,7 +47,7 @@ param rend_farelo :=
     Nabo_Forrageiro 0.45;
 
 # Custos e capacidades gerais
-param CC := 45.0;                             # Custo de Conversão
+param CC := 45.0;                             # Custo de Conversão | R$ 45,00 por tonetalda 
 param Capacidade_Usina := 196362.0;
 
 param Custo_Estoque_Semente :=
@@ -58,11 +58,11 @@ param Custo_Estoque_Semente :=
     Nabo_Forrageiro 11.0;
 
 param Custo_Fixo_Polo :=
-    polo_norteMG    500000.0
+    polo_norteMG    500000.0              # 500 K
     polo_semiarido  400000.0;
 
 param Custo_Fixo_OGR :=
-    rede_catadores_moc 150000.0                         # Ex: parcerias com cooperativas locais, catadores e redes de economia solidária
+    rede_catadores_moc 150000.0                         # 150 K | Ex: parcerias com cooperativas locais, catadores e redes de economia solidária
     rede_urbana        200000.0;                        # Ex: grandes centros comerciais e urbanos, como restaurantes e hotéis
 
 # Limites operacionais por ano
@@ -74,10 +74,10 @@ param Cap_Carregamento := 2024 130000.0 2025 150000.0;
 param C_OGR := rede_catadores_moc 110.0 rede_urbana 125.0;
 
 param PC :=
-    [polo_norteMG, *]   := Soja 140.0 Algodao 160.0 Macauba 120.0 Girassol 150.0 Nabo_Forrageiro 130.0
+    [polo_norteMG, *]   := Soja 140.0 Algodao 160.0 Macauba 120.0 Girassol 150.0 Nabo_Forrageiro 130.0   # Custo do cultivo: R$ 140,00 por hectare
     [polo_semiarido, *] := Soja 155.0 Algodao 175.0 Macauba 135.0 Girassol 165.0 Nabo_Forrageiro 145.0;
 
-param GTC := polo_norteMG 18.0 polo_semiarido 25.0;
+param GTC := polo_norteMG 18.0 polo_semiarido 25.0;                 # custo de transporte: R$ 18,00 por tonelada
 
 # Demanda estocástica por cenário (S1, S2, S3)
 param D :=
