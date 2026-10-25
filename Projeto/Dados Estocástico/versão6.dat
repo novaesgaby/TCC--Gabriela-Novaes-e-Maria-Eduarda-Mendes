@@ -18,6 +18,7 @@ param pi :=
     S3  0.3;
 
 # Parâmetros de rendimento e perdas de cada matéria-prima (m)
+# Indica o teor de óleo. Ex: soja tem 18% de conversão de óleo
 param alfa :=
     Soja            0.18
     Algodao         0.15
@@ -26,27 +27,27 @@ param alfa :=
     Nabo_Forrageiro 0.35;
 
 # Preços e receitas
-param preco_biodiesel := 4500.0;          # valor da venda unitária do biodiesel
+param preco_biodiesel := 4500.0;          # valor da venda unitária do biodiesel 
 param preco_glicerina := 1200.0;          # valor de venda unitária do coproduto (glicerina)
 param rend_glicerina  := 0.10;            # rendimento da glicerina
 param preco_carbono   := 50.0;            # créditos de carbono gerados pelo processo 
 
 param preco_farelo :=
-    Soja            800.0                # preço de mercado de cada matéria-prima
+    Soja            800.0                # preço de venda do farelo de cada matéria-prima 
     Algodao         650.0
     Macauba         500.0
     Girassol        700.0
     Nabo_Forrageiro 600.0;
 
 param rend_farelo :=
-    Soja            0.75                 # rendimento do farela de cada matéria-prima
+    Soja            0.75                 # rendimento do farela de cada matéria-prima (subproduto por ser usado em ração animal)
     Algodao         0.55
     Macauba         0.50
     Girassol        0.50
     Nabo_Forrageiro 0.45;
 
 # Custos e capacidades gerais
-param CC := 45.0;
+param CC := 45.0;                             # Custo de Conversão
 param Capacidade_Usina := 196362.0;
 
 param Custo_Estoque_Semente :=
@@ -61,8 +62,8 @@ param Custo_Fixo_Polo :=
     polo_semiarido  400000.0;
 
 param Custo_Fixo_OGR :=
-    rede_catadores_moc 150000.0
-    rede_urbana        200000.0;
+    rede_catadores_moc 150000.0                         # Ex: parcerias com cooperativas locais, catadores e redes de economia solidária
+    rede_urbana        200000.0;                        # Ex: grandes centros comerciais e urbanos, como restaurantes e hotéis
 
 # Limites operacionais por ano
 param Cap_Descarga := 2024 140000.0 2025 160000.0;
