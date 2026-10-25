@@ -9,7 +9,7 @@ set T := 2024 2025;                                      # Horizonte de planejam
 set P := polo_norteMG polo_semiarido;
 set R := rede_catadores_moc rede_urbana;
 set M := Soja Algodao Macauba Girassol Nabo_Forrageiro;
-set S := S1 S2 S3;                                       # Conjunto de cenários da árvore estocástica ($\omega$)
+set S := S1 S2 S3;                                       # Conjunto de cenários
 
 # Probabilidade de cada cenário ocorrer (pi_omega)
 param pi :=
@@ -17,7 +17,7 @@ param pi :=
     S2  0.5
     S3  0.3;
 
-# Parâmetros de rendimento e perdas
+# Parâmetros de rendimento e perdas de cada matéria-prima (m)
 param alfa :=
     Soja            0.18
     Algodao         0.15
@@ -26,20 +26,20 @@ param alfa :=
     Nabo_Forrageiro 0.35;
 
 # Preços e receitas
-param preco_biodiesel := 4500.0;
-param preco_glicerina := 1200.0;
-param rend_glicerina  := 0.10;
-param preco_carbono   := 50.0;
+param preco_biodiesel := 4500.0;          # valor da venda unitária do biodiesel
+param preco_glicerina := 1200.0;          # valor de venda unitária do coproduto (glicerina)
+param rend_glicerina  := 0.10;            # rendimento da glicerina
+param preco_carbono   := 50.0;            # créditos de carbono gerados pelo processo 
 
 param preco_farelo :=
-    Soja            800.0
+    Soja            800.0                # preço de mercado de cada matéria-prima
     Algodao         650.0
     Macauba         500.0
     Girassol        700.0
     Nabo_Forrageiro 600.0;
 
 param rend_farelo :=
-    Soja            0.75
+    Soja            0.75                 # rendimento do farela de cada matéria-prima
     Algodao         0.55
     Macauba         0.50
     Girassol        0.50
@@ -128,12 +128,12 @@ param Z_barra :=
     [polo_semiarido, Girassol, *]      := 2024 3000.0  2025 3500.0
     [polo_semiarido, Nabo_Forrageiro, *]:= 2024 3000.0  2025 3500.0;
 
-param TF := 2024 1800 2025 2200;
+param TF := 2024 1800 2025 2200;            # meta de atendimento às famílias do Selo Social
 
 param OfertaOGR :=
-    [rede_catadores_moc, *] := 2024 90000.0 2025 100000.0
+    [rede_catadores_moc, *] := 2024 90000.0 2025 100000.0      # limite de disponibilidade do óleo
     [rede_urbana, *]        := 2024 20000.0 2025 25000.0;
 
-param CompraMax := 2024 15000.0 2025 20000.0;
+param CompraMax := 2024 15000.0 2025 20000.0;                  # compra máxima de óleo terceiro
 
 end;
