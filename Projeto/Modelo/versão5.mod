@@ -1,6 +1,6 @@
-# ==============================================================================
+# ============================================================================================================================================
 # MODELO DE OTIMIZAÇÃO DA CADEIA DE SUPRIMENTOS - PBIO (VERSÃO 5: MILP / ESTRATÉGICO)
-# ==============================================================================
+# ============================================================================================================================================
 
 # CONJUNTOS (Índices)
 set T; # Períodos de tempo (2024 e 2025)
@@ -59,9 +59,9 @@ var v{T} >= 0;                     # Óleo complementar adquirido do mercado
 var y_polo{P, T} binary;           # 1 se o polo agrícola p for aberto no período t, 0 caso contrário
 var y_ogr{R, T} binary;            # 1 se a rede de OGR r for contratada no período t, 0 caso contrário
 
-# ==============================================================================
+# ==================================================================================================================================
 # FUNÇÃO OBJETIVO: Maximizar o Lucro Total (Incluindo custos fixos estratégicos)
-# ==============================================================================
+# ==================================================================================================================================
 maximize Lucro_Total:
     # 1. RECEITAS
     sum{t in T} (preco_biodiesel * (sum{m in M} (alfa[m] * (1 - beta_proc) * w[m,t]) + sum{r in R} ogr_x[r,t] + v[t])) +
@@ -89,66 +89,75 @@ maximize Lucro_Total:
 # (descontada a perda industrial proc), do OGR processado e do óleo de terceiros atinja a demanda total do período t.  
 s.t. Atendimento_Demanda{t in T}:
     sum{m in M} (alfa[m] * (1 - beta_proc) * w[m,t]) + sum{r in R} ogr_x[r,t] + v[t] >= D[t];
-# =====================================================================================
+# ==================================================================================================================================
 
 # Restrição (3), determina o limite da área agrícola. Só existe plantação se o polo estiver aberto
 # Se o modelo decidir não abrir o polo (y_polo[p,t] = 0), o limite de plantio é multiplicado por zero, forçando a área plantada (z) a ser 0. 
 # Se o polo estiver aberto (y_polo[p,t] = 1), a área plantada pode crescer até atingir o teto máximo de terra disponível (Z_barra).
 s.t. Limite_Area_Disponivel{p in P, m in M, t in T}:
     z[p,m,t] <= Z_barra[p,m,t] * y_polo[p,t];
-# ==========================================================================================
+# ==================================================================================================================================
 
 # Restrição (4), leva em consideração o cumprimento do Selo Biocombustível Social.
 # O total de famílias inseridas no programa (calculado pela área total dividida pelo lote médio familiar) deve atingir a meta mínima. 
 s.t. Cumprimento_Selo_Social{t in T}:
     sum{p in P, m in M} (z[p,m,t] / AZ[p,t]) >= TF[t];
-# =========================================================================================
+# ==================================================================================================================================
 
 # Restrição (5) determina o balanço de massa agrícola.
 # Estabelece que o volume total de sementes transportadas até a usina corresponde à colheita bruta abatida da taxa de perda em transporte.
 s.t. Balanco_Massa_Agricola{p in P, m in M, t in T}:
     gx[p,m,t] = (1 - beta_trans) * gama[p,m,t] * z[p,m,t];
 
-# =======================================================================================
+# ==================================================================================================================================
 
 # Restrição (6)
 s.t. Balanco_Processamento_Armazenagem{m in M, t in T}:
     w[m,t] = (1 - beta_arm) * sum{p in P} gx[p,m,t];
+# ==================================================================================================================================
 
 #  Restrição (7) determina a capacidade industrial de esmagamento
 # A soma de todas as sementes enviadas para o esmagamento industrial no ano t não pode ultrapassar a capacidade
 s.t. Capacidade_Industrial{t in T}:
     sum{m in M} w[m,t] <= Capacidade_Usina;
-# ====================================================================================
+# ==================================================================================================================================
 
 # Restrição (8) estabelece o percentual mínimo de OGR(14%).
 s.t. Percentual_Minimo_OGR{t in T}:
     sum{r in R} ogr_x[r,t] >= 0.14 * D[t];
+# ==================================================================================================================================
 
 # Restrição (9) garante a disponibilidade máxima de OGR.
 # Garante que a compra de OGR respeite o teto de oferta local de cada rede e só ocorra se a respectiva parceria for contratada (y_ogrr,t=1). 
 s.t. Disponibilidade_Max_OGR{r in R, t in T}:
     ogr_x[r,t] <= OfertaOGR[r,t] * y_ogr[r,t];
+# ==================================================================================================================================
 
 # Restrição (10) limita a aquisição de óleo externo. Limita a dependência de fornecedores externos ao teto operacional fixado para o período. 
 # Limita a qtd máxima de óleo comprado pronto de terceiro
 s.t. Teto_Compra_Externa{t in T}:
     v[t] <= CompraMax[t];
+# ==================================================================================================================================
 
 # Restrição (11) limita a capacidade de descarga na usina. Limita o fluxo físico diário/anual de recepção e moega na fábrica
 # Restrições Logísticas: limite de descarga / capacidade caminhões
 s.t. Limite_Descarga_Usina{t in T}:
     sum{p in P, m in M} gx[p,m,t] <= Cap_Descarga[t];
+# ==================================================================================================================================
 
 # Restrição (12) limita a capacidade do Parque de Silos. Limita a quantidade máxima acumulada de sementes nos silos da planta. 
 s.t. Limite_Armazenagem_Silos{t in T}:
     sum{p in P, m in M} ((1 - beta_trans) * gama[p,m,t] * z[p,m,t]) <= Cap_Armazenagem[t];
+# ==================================================================================================================================
 
 # Restrição (13) limita a capacidade da frota de caminhões. Limita o volume máximo de sementes transportadas das roças à fábrica pelo teto da frota disponível.
 s.t. Limite_Frota_Caminhoes{t in T}:
     sum{p in P, m in M} gx[p,m,t] <= Cap_Frota_Caminhoes[t];
+# ==================================================================================================================================
 
 # Restrição (14) limita a capacidade de expedição e carregamento. Limita o volume total escoado de biodiesel expedido em carretas no carregamento da usina.
 s.t. Limite_Carregamento_Expedicao{t in T}:
     (sum{m in M} (alfa[m] * (1 - beta_proc) * w[m,t]) + sum{r in R} ogr_x[r,t] + v[t]) <= Cap_Carregamento[t];
+# ==================================================================================================================================
+# ==================================================================================================================================
 
