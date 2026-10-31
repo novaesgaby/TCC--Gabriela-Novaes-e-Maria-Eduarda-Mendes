@@ -1,1 +1,195 @@
+# =============================================================================================================
+# SEÇÃO DE DADOS (DATA) - MODELO PBIO (VERSÃO 6 - 24 PERÍODOS MENSAIS)
+# =============================================================================================================
 
+data;
+
+# Conjuntos 
+set T := M1 M25 M3 M4 M5 M6 M7 M8 M9 M10 M11 M12 
+         M13 M14 M15 M16 M17 M18 M19 M20 M21 M22 M23 M24; # Horizonte de planejamento de 24 meses
+
+set P := polo_norteMG polo_semiarido;
+set R := rede_catadores_moc rede_urbana;
+set M := Soja Algodao Macauba Girassol Nabo_Forrageiro;
+set S := S1 S2 S3;                                      # Conjunto de cenários
+
+# Probabilidade de cada cenário ocorrer (pi_omega)
+param pi :=
+    S1  0.2
+    S2  0.5
+    S3  0.3;
+
+# Parâmetros de rendimento e perdas de cada matéria-prima (m)
+param alfa :=
+    Soja              0.18
+    Algodao           0.15
+    Macauba           0.28
+    Girassol          0.40
+    Nabo_Forrageiro   0.35;
+
+# Preços e receitas 
+param preco_biodiesel := 4500.0;          
+param preco_glicerina := 1200.0;          
+param rend_glicerina  := 0.10;            
+param preco_carbono   := 50.0;            
+
+param preco_farelo :=
+    Soja              800.0                
+    Algodao           650.0
+    Macauba           500.0
+    Girassol          700.0
+    Nabo_Forrageiro   600.0;
+
+param rend_farelo :=
+    Soja              0.75                 
+    Algodao           0.55
+    Macauba           0.50
+    Girassol          0.50
+    Nabo_Forrageiro   0.45;
+
+# Custos e capacidades gerais
+param CC := 45.0;                             
+param Capacidade_Usina := 16362.0; # (Mensal (toneladas)
+
+param Custo_Estoque_Semente :=
+    Soja              15.0
+    Algodao           12.0
+    Macauba           10.0
+    Girassol          14.0
+    Nabo_Forrageiro   11.0;
+
+param Custo_Fixo_Polo :=
+    polo_norteMG    500000.0                
+    polo_semiarido  400000.0;
+
+param Custo_Fixo_OGR :=
+    rede_catadores_moc 150000.0                        
+    rede_urbana        200000.0;                        
+
+# Limites operacionais por mês 
+param Cap_Descarga := 
+    M1 12000  M2 12000  M3 12000  M4 12000  M5 12000  M6 12000
+    M7 12000  M8 12000  M9 12000  M10 12000 M11 12000 M12 12000
+    M13 13000 M14 13000 M15 13000 M16 13000 M17 13000 M18 13000
+    M19 13000 M20 13000 M21 13000 M22 13000 M23 13000 M24 13000;
+
+param Cap_Armazenagem := 
+    M1 7500   M2 7500   M3 7500   M4 7500   M5 7500   M6 7500
+    M7 7500   M8 7500   M9 7500   M10 7500  M11 7500  M12 7500
+    M13 8000  M14 8000  M15 8000  M16 8000  M17 8000  M18 8000
+    M19 8000  M20 8000  M21 8000  M22 8000  M23 8000  M24 8000;
+
+param Cap_Frota_Caminhoes := 
+    M1 12000  M2 12000  M3 12000  M4 12000  M5 12000  M6 12000
+    M7 12000  M8 12000  M9 12000  M10 12000 M11 12000 M12 12000
+    M13 13000 M14 13000 M15 13000 M16 13000 M17 13000 M18 13000
+    M19 13000 M20 13000 M21 13000 M22 13000 M23 13000 M24 13000;
+
+param Cap_Carregamento := 
+    M1 11000  M2 11000  M3 11000  M4 11000  M5 11000  M6 11000
+    M7 11000  M8 11000  M9 11000  M10 11000 M11 11000 M12 11000
+    M13 12000 M14 12000 M15 12000 M16 12000 M17 12000 M18 12000
+    M19 12000 M20 12000 M21 12000 M22 12000 M23 12000 M24 12000;
+
+param C_OGR := rede_catadores_moc 110.0 rede_urbana 125.0;
+
+param PC :=
+    [polo_norteMG, *]   := Soja 140.0 Algodao 160.0 Macauba 120.0 Girassol 150.0 Nabo_Forrageiro 130.0    
+    [polo_semiarido, *] := Soja 155.0 Algodao 175.0 Macauba 135.0 Girassol 165.0 Nabo_Forrageiro 145.0;
+
+param GTC := polo_norteMG 18.0 polo_semiarido 25.0;               
+
+# Demanda estocástica por cenário (M1 a M24) 
+param D :=
+    [M1, *]  := S1 7300 S2 8100 S3 9300
+    [M2, *]  := S1 7300 S2 8100 S3 9300
+    [M3, *]  := S1 7300 S2 8100 S3 9300
+    [M4, *]  := S1 7300 S2 8100 S3 9300
+    [M5, *]  := S1 7300 S2 8100 S3 9300
+    [M6, *]  := S1 7300 S2 8100 S3 9300
+    [M7, *]  := S1 7300 S2 8100 S3 9300
+    [M8, *]  := S1 7300 S2 8100 S3 9300
+    [M9, *]  := S1 7300 S2 8100 S3 9300
+    [M10, *] := S1 7300 S2 8100 S3 9300
+    [M11, *] := S1 7300 S2 8100 S3 9300
+    [M12, *] := S1 7300 S2 8100 S3 9300
+    [M13, *] := S1 8500 S2 9500 S3 11000
+    [M14, *] := S1 8500 S2 9500 S3 11000
+    [M15, *] := S1 8500 S2 9500 S3 11000
+    [M16, *] := S1 8500 S2 9500 S3 11000
+    [M17, *] := S1 8500 S2 9500 S3 11000
+    [M18, *] := S1 8500 S2 9500 S3 11000
+    [M19, *] := S1 8500 S2 9500 S3 11000
+    [M20, *] := S1 8500 S2 9500 S3 11000
+    [M21, *] := S1 8500 S2 9500 S3 11000
+    [M22, *] := S1 8500 S2 9500 S3 11000
+    [M23, *] := S1 8500 S2 9500 S3 11000
+    [M24, *] := S1 8500 S2 9500 S3 11000;
+
+# Custo do óleo externo estocástico por mês e cenário
+param v_cost :=
+    [M1, *]  := S1 420.0 S2 480.0 S3 550.0
+    [M2, *]  := S1 420.0 S2 480.0 S3 550.0
+    [M3, *]  := S1 420.0 S2 480.0 S3 550.0
+    [M4, *]  := S1 420.0 S2 480.0 S3 550.0
+    [M5, *]  := S1 420.0 S2 480.0 S3 550.0
+    [M6, *]  := S1 420.0 S2 480.0 S3 550.0
+    [M7, *]  := S1 420.0 S2 480.0 S3 550.0
+    [M8, *]  := S1 420.0 S2 480.0 S3 550.0
+    [M9, *]  := S1 420.0 S2 480.0 S3 550.0
+    [M10, *] := S1 420.0 S2 480.0 S3 550.0
+    [M11, *] := S1 420.0 S2 480.0 S3 550.0
+    [M12, *] := S1 420.0 S2 480.0 S3 550.0
+    [M13, *] := S1 450.0 S2 510.0 S3 580.0
+    [M14, *] := S1 450.0 S2 510.0 S3 580.0
+    [M15, *] := S1 450.0 S2 510.0 S3 580.0
+    [M16, *] := S1 450.0 S2 510.0 S3 580.0
+    [M17, *] := S1 450.0 S2 510.0 S3 580.0
+    [M18, *] := S1 450.0 S2 510.0 S3 580.0
+    [M19, *] := S1 450.0 S2 510.0 S3 580.0
+    [M20, *] := S1 450.0 S2 510.0 S3 580.0
+    [M21, *] := S1 450.0 S2 510.0 S3 580.0
+    [M22, *] := S1 450.0 S2 510.0 S3 580.0
+    [M23, *] := S1 450.0 S2 510.0 S3 580.0
+    [M24, *] := S1 450.0 S2 510.0 S3 580.0;
+
+# Parâmetro de Produtividade Agrícola (gama) expandido para os 24 meses
+
+param gama :=
+    [polo_norteMG, Soja, M1, *]         := S1 2.24  S2 2.80  S3 3.22
+    [polo_norteMG, Soja, M2, *]         := S1 2.24  S2 2.80  S3 3.22
+    # ... (repetir ou ajustar sazonalmente para M3 até M24 para cada cultura e polo)
+    [polo_semiarido, Nabo_Forrageiro, M24, *]:= S1 1.20  S2 1.50  S3 1.72;
+
+param AZ :=
+    [polo_norteMG, *]   := M1 12.0 M2 12.0 M3 12.0 M4 12.0 M5 12.0 M6 12.0 M7 12.0 M8 12.0 M9 12.0 M10 12.0 M11 12.0 M12 12.0
+                           M13 12.0 M14 12.0 M15 12.0 M16 12.0 M17 12.0 M18 12.0 M19 12.0 M20 12.0 M21 12.0 M22 12.0 M23 12.0 M24 12.0
+    [polo_semiarido, *] := M1 15.0 M2 15.0 M3 15.0 M4 15.0 M5 15.0 M6 15.0 M7 15.0 M8 15.0 M9 15.0 M10 15.0 M11 15.0 M12 15.0
+                           M13 15.0 M14 15.0 M15 15.0 M16 15.0 M17 15.0 M18 15.0 M19 15.0 M20 15.0 M21 15.0 M22 15.0 M23 15.0 M24 15.0;
+
+param Z_barra :=
+    [polo_norteMG, Soja, *]             := M1 2500 M2 2500 M3 2500 M4 2500 M5 2500 M6 2500 M7 2500 M8 2500 M9 2500 M10 2500 M11 2500 M12 2500
+                                           M13 3000 M14 3000 M15 3000 M16 3000 M17 3000 M18 3000 M19 3000 M20 3000 M21 3000 M22 3000 M23 3000 M24 3000
+    [polo_norteMG, Algodao, *]          := M1 1000 M13 1200 # (e assim por diante para os 24 meses)
+    # ... (demais culturas e polos)
+    [polo_semiarido, Nabo_Forrageiro, *]:= M1 300  M13 350;
+
+param TF := 
+    M1 150  M2 150  M3 150  M4 150  M5 150  M6 150  
+    M7 150  M8 150  M9 150  M10 150 M11 150 M12 150
+    M13 180 M14 180 M15 180 M16 180 M17 180 M18 180
+    M19 180 M20 180 M21 180 M22 180 M23 180 M24 180;  # meta mensal de famílias do Selo Social
+
+param OfertaOGR :=
+    [rede_catadores_moc, *] := M1 7500 M2 7500 M3 7500 M4 7500 M5 7500 M6 7500 M7 7500 M8 7500 M9 7500 M10 7500 M11 7500 M12 7500
+                               M13 8300 M14 8300 M15 8300 M16 8300 M17 8300 M18 8300 M19 8300 M20 8300 M21 8300 M22 8300 M23 8300 M24 8300
+    [rede_urbana, *]        := M1 1600 M2 1600 M3 1600 M4 1600 M5 1600 M6 1600 M7 1600 M8 1600 M9 1600 M10 1600 M11 1600 M12 1600
+                               M13 2000 M14 2000 M15 2000 M16 2000 M17 2000 M18 2000 M19 2000 M20 2000 M21 2000 M22 2000 M23 2000 M24 2000;
+
+param CompraMax := 
+    M1 1250  M2 1250  M3 1250  M4 1250  M5 1250  M6 1250
+    M7 1250  M8 1250  M9 1250  M10 1250 M11 1250 M12 1250
+    M13 1660 M14 1660 M15 1660 M16 1660 M17 1660 M18 1660
+    M19 1660 M20 1660 M21 1660 M22 1660 M23 1660 M24 1660;
+
+end;
