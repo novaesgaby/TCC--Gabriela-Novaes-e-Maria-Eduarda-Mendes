@@ -1,25 +1,25 @@
 # =============================================================================================================
-# SEÇÃO DE DADOS (DATA) - MODELO PBIO (VERSÃO 6 - 24 PERÍODOS MENSAIS)
+# SEÇÃO DE DADOS (DATA) - MODELO PBIO (VERSÃO 6 - 24 PERÍODOS MENSAIS COMPLETO)
 # =============================================================================================================
 
 data;
 
 # Conjuntos 
 set T := M1 M2 M3 M4 M5 M6 M7 M8 M9 M10 M11 M12 
-         M13 M14 M15 M16 M17 M18 M19 M20 M21 M22 M23 M24; # Horizonte de planejamento de 24 meses
+         M13 M14 M15 M16 M17 M18 M19 M20 M21 M22 M23 M24; # Horizonte S&OP de 24 meses
 
 set P := polo_norteMG polo_semiarido;
 set R := rede_catadores_moc rede_urbana;
 set M := Soja Algodao Macauba Girassol Nabo_Forrageiro;
-set S := S1 S2 S3;                                      # Conjunto de cenários
+set S := S1 S2 S3;                                      # Cenários estocásticos
 
-# Probabilidade de cada cenário ocorrer (pi_omega)
+# Probabilidade de cada cenário ocorrer
 param pi :=
-    S1  0.2
+    S1  0.2 
     S2  0.5
     S3  0.3;
 
-# Parâmetros de rendimento e perdas de cada matéria-prima (m)
+# Rendimentos de óleo (alfa)
 param alfa :=
     Soja              0.18
     Algodao           0.15
@@ -27,7 +27,7 @@ param alfa :=
     Girassol          0.40
     Nabo_Forrageiro   0.35;
 
-# Preços e receitas 
+# Preços e receitas gerais
 param preco_biodiesel := 4500.0;          
 param preco_glicerina := 1200.0;          
 param rend_glicerina  := 0.10;            
@@ -47,9 +47,9 @@ param rend_farelo :=
     Girassol          0.50
     Nabo_Forrageiro   0.45;
 
-# Custos e capacidades gerais
+# Custos e capacidade mensal da usina (calibrado para ~16.3k t/mês)
 param CC := 45.0;                             
-param Capacidade_Usina := 16362.0; # (Mensal (toneladas)
+param Capacidade_Usina := 16362.0;
 
 param Custo_Estoque_Semente :=
     Soja              15.0
@@ -66,30 +66,22 @@ param Custo_Fixo_OGR :=
     rede_catadores_moc 150000.0                        
     rede_urbana        200000.0;                        
 
-# Limites operacionais por mês 
+# Limites operacionais mensais (M1 a M24)
 param Cap_Descarga := 
-    M1 12000  M2 12000  M3 12000  M4 12000  M5 12000  M6 12000
-    M7 12000  M8 12000  M9 12000  M10 12000 M11 12000 M12 12000
-    M13 13000 M14 13000 M15 13000 M16 13000 M17 13000 M18 13000
-    M19 13000 M20 13000 M21 13000 M22 13000 M23 13000 M24 13000;
+    M1 12000 M2 12000 M3 12000 M4 12000 M5 12000 M6 12000 M7 12000 M8 12000 M9 12000 M10 12000 M11 12000 M12 12000
+    M13 13000 M14 13000 M15 13000 M16 13000 M17 13000 M18 13000 M19 13000 M20 13000 M21 13000 M22 13000 M23 13000 M24 13000;
 
 param Cap_Armazenagem := 
-    M1 7500   M2 7500   M3 7500   M4 7500   M5 7500   M6 7500
-    M7 7500   M8 7500   M9 7500   M10 7500  M11 7500  M12 7500
-    M13 8000  M14 8000  M15 8000  M16 8000  M17 8000  M18 8000
-    M19 8000  M20 8000  M21 8000  M22 8000  M23 8000  M24 8000;
+    M1 7500 M2 7500 M3 7500 M4 7500 M5 7500 M6 7500 M7 7500 M8 7500 M9 7500 M10 7500 M11 7500 M12 7500
+    M13 8000 M14 8000 M15 8000 M16 8000 M17 8000 M18 8000 M19 8000 M20 8000 M21 8000 M22 8000 M23 8000 M24 8000;
 
 param Cap_Frota_Caminhoes := 
-    M1 12000  M2 12000  M3 12000  M4 12000  M5 12000  M6 12000
-    M7 12000  M8 12000  M9 12000  M10 12000 M11 12000 M12 12000
-    M13 13000 M14 13000 M15 13000 M16 13000 M17 13000 M18 13000
-    M19 13000 M20 13000 M21 13000 M22 13000 M23 13000 M24 13000;
+    M1 12000 M2 12000 M3 12000 M4 12000 M5 12000 M6 12000 M7 12000 M8 12000 M9 12000 M10 12000 M11 12000 M12 12000
+    M13 13000 M14 13000 M15 13000 M16 13000 M17 13000 M18 13000 M19 13000 M20 13000 M21 13000 M22 13000 M23 13000 M24 13000;
 
 param Cap_Carregamento := 
-    M1 11000  M2 11000  M3 11000  M4 11000  M5 11000  M6 11000
-    M7 11000  M8 11000  M9 11000  M10 11000 M11 11000 M12 11000
-    M13 12000 M14 12000 M15 12000 M16 12000 M17 12000 M18 12000
-    M19 12000 M20 12000 M21 12000 M22 12000 M23 12000 M24 12000;
+    M1 11000 M2 11000 M3 11000 M4 11000 M5 11000 M6 11000 M7 11000 M8 11000 M9 11000 M10 11000 M11 11000 M12 11000
+    M13 12000 M14 12000 M15 12000 M16 12000 M17 12000 M18 12000 M19 12000 M20 12000 M21 12000 M22 12000 M23 12000 M24 12000;
 
 param C_OGR := rede_catadores_moc 110.0 rede_urbana 125.0;
 
@@ -99,97 +91,204 @@ param PC :=
 
 param GTC := polo_norteMG 18.0 polo_semiarido 25.0;               
 
-# Demanda estocástica por cenário (M1 a M24) 
+# Demanda estocástica por mês e cenário
 param D :=
-    [M1, *]  := S1 7300 S2 8100 S3 9300
-    [M2, *]  := S1 7300 S2 8100 S3 9300
-    [M3, *]  := S1 7300 S2 8100 S3 9300
-    [M4, *]  := S1 7300 S2 8100 S3 9300
-    [M5, *]  := S1 7300 S2 8100 S3 9300
-    [M6, *]  := S1 7300 S2 8100 S3 9300
-    [M7, *]  := S1 7300 S2 8100 S3 9300
-    [M8, *]  := S1 7300 S2 8100 S3 9300
-    [M9, *]  := S1 7300 S2 8100 S3 9300
-    [M10, *] := S1 7300 S2 8100 S3 9300
-    [M11, *] := S1 7300 S2 8100 S3 9300
-    [M12, *] := S1 7300 S2 8100 S3 9300
-    [M13, *] := S1 8500 S2 9500 S3 11000
-    [M14, *] := S1 8500 S2 9500 S3 11000
-    [M15, *] := S1 8500 S2 9500 S3 11000
-    [M16, *] := S1 8500 S2 9500 S3 11000
-    [M17, *] := S1 8500 S2 9500 S3 11000
-    [M18, *] := S1 8500 S2 9500 S3 11000
-    [M19, *] := S1 8500 S2 9500 S3 11000
-    [M20, *] := S1 8500 S2 9500 S3 11000
-    [M21, *] := S1 8500 S2 9500 S3 11000
-    [M22, *] := S1 8500 S2 9500 S3 11000
-    [M23, *] := S1 8500 S2 9500 S3 11000
-    [M24, *] := S1 8500 S2 9500 S3 11000;
+    [M1, *]  := S1 7300 S2 8100 S3 9300   [M2, *]  := S1 7300 S2 8100 S3 9300
+    [M3, *]  := S1 7300 S2 8100 S3 9300   [M4, *]  := S1 7300 S2 8100 S3 9300
+    [M5, *]  := S1 7300 S2 8100 S3 9300   [M6, *]  := S1 7300 S2 8100 S3 9300
+    [M7, *]  := S1 7300 S2 8100 S3 9300   [M8, *]  := S1 7300 S2 8100 S3 9300
+    [M9, *]  := S1 7300 S2 8100 S3 9300   [M10, *] := S1 7300 S2 8100 S3 9300
+    [M11, *] := S1 7300 S2 8100 S3 9300   [M12, *] := S1 7300 S2 8100 S3 9300
+    [M13, *] := S1 8500 S2 9500 S3 11000  [M14, *] := S1 8500 S2 9500 S3 11000
+    [M15, *] := S1 8500 S2 9500 S3 11000  [M16, *] := S1 8500 S2 9500 S3 11000
+    [M17, *] := S1 8500 S2 9500 S3 11000  [M18, *] := S1 8500 S2 9500 S3 11000
+    [M19, *] := S1 8500 S2 9500 S3 11000  [M20, *] := S1 8500 S2 9500 S3 11000
+    [M21, *] := S1 8500 S2 9500 S3 11000  [M22, *] := S1 8500 S2 9500 S3 11000
+    [M23, *] := S1 8500 S2 9500 S3 11000  [M24, *] := S1 8500 S2 9500 S3 11000;
 
-# Custo do óleo externo estocástico por mês e cenário
+# Custo estocástico de óleo de terceiros
 param v_cost :=
-    [M1, *]  := S1 420.0 S2 480.0 S3 550.0
-    [M2, *]  := S1 420.0 S2 480.0 S3 550.0
-    [M3, *]  := S1 420.0 S2 480.0 S3 550.0
-    [M4, *]  := S1 420.0 S2 480.0 S3 550.0
-    [M5, *]  := S1 420.0 S2 480.0 S3 550.0
-    [M6, *]  := S1 420.0 S2 480.0 S3 550.0
-    [M7, *]  := S1 420.0 S2 480.0 S3 550.0
-    [M8, *]  := S1 420.0 S2 480.0 S3 550.0
-    [M9, *]  := S1 420.0 S2 480.0 S3 550.0
-    [M10, *] := S1 420.0 S2 480.0 S3 550.0
-    [M11, *] := S1 420.0 S2 480.0 S3 550.0
-    [M12, *] := S1 420.0 S2 480.0 S3 550.0
-    [M13, *] := S1 450.0 S2 510.0 S3 580.0
-    [M14, *] := S1 450.0 S2 510.0 S3 580.0
-    [M15, *] := S1 450.0 S2 510.0 S3 580.0
-    [M16, *] := S1 450.0 S2 510.0 S3 580.0
-    [M17, *] := S1 450.0 S2 510.0 S3 580.0
-    [M18, *] := S1 450.0 S2 510.0 S3 580.0
-    [M19, *] := S1 450.0 S2 510.0 S3 580.0
-    [M20, *] := S1 450.0 S2 510.0 S3 580.0
-    [M21, *] := S1 450.0 S2 510.0 S3 580.0
-    [M22, *] := S1 450.0 S2 510.0 S3 580.0
-    [M23, *] := S1 450.0 S2 510.0 S3 580.0
-    [M24, *] := S1 450.0 S2 510.0 S3 580.0;
+    [M1, *]  := S1 420.0 S2 480.0 S3 550.0   [M2, *]  := S1 420.0 S2 480.0 S3 550.0
+    [M3, *]  := S1 420.0 S2 480.0 S3 550.0   [M4, *]  := S1 420.0 S2 480.0 S3 550.0
+    [M5, *]  := S1 420.0 S2 480.0 S3 550.0   [M6, *]  := S1 420.0 S2 480.0 S3 550.0
+    [M7, *]  := S1 420.0 S2 480.0 S3 550.0   [M8, *]  := S1 420.0 S2 480.0 S3 550.0
+    [M9, *]  := S1 420.0 S2 480.0 S3 550.0   [M10, *] := S1 420.0 S2 480.0 S3 550.0
+    [M11, *] := S1 420.0 S2 480.0 S3 550.0   [M12, *] := S1 420.0 S2 480.0 S3 550.0
+    [M13, *] := S1 450.0 S2 510.0 S3 580.0   [M14, *] := S1 450.0 S2 510.0 S3 580.0
+    [M15, *] := S1 450.0 S2 510.0 S3 580.0   [M16, *] := S1 450.0 S2 510.0 S3 580.0
+    [M17, *] := S1 450.0 S2 510.0 S3 580.0   [M18, *] := S1 450.0 S2 510.0 S3 580.0
+    [M19, *] := S1 450.0 S2 510.0 S3 580.0   [M20, *] := S1 450.0 S2 510.0 S3 580.0
+    [M21, *] := S1 450.0 S2 510.0 S3 580.0   [M22, *] := S1 450.0 S2 510.0 S3 580.0
+    [M23, *] := S1 450.0 S2 510.0 S3 580.0   [M24, *] := S1 450.0 S2 510.0 S3 580.0;
 
-# Parâmetro de Produtividade Agrícola (gama) expandido para os 24 meses
-
+# Produtividade Agrícola (gama) preenchida para todos os 24 meses
 param gama :=
-    [polo_norteMG, Soja, M1, *]         := S1 2.24  S2 2.80  S3 3.22
-    [polo_norteMG, Soja, M2, *]         := S1 2.24  S2 2.80  S3 3.22
-    # ... (repetir ou ajustar sazonalmente para M3 até M24 para cada cultura e polo)
-    [polo_semiarido, Nabo_Forrageiro, M24, *]:= S1 1.20  S2 1.50  S3 1.72;
+    [polo_norteMG, Soja, M1, *] := S1 2.24 S2 2.80 S3 3.22   [polo_norteMG, Soja, M2, *] := S1 2.24 S2 2.80 S3 3.22
+    [polo_norteMG, Soja, M3, *] := S1 2.24 S2 2.80 S3 3.22   [polo_norteMG, Soja, M4, *] := S1 2.24 S2 2.80 S3 3.22
+    [polo_norteMG, Soja, M5, *] := S1 2.24 S2 2.80 S3 3.22   [polo_norteMG, Soja, M6, *] := S1 2.24 S2 2.80 S3 3.22
+    [polo_norteMG, Soja, M7, *] := S1 2.24 S2 2.80 S3 3.22   [polo_norteMG, Soja, M8, *] := S1 2.24 S2 2.80 S3 3.22
+    [polo_norteMG, Soja, M9, *] := S1 2.24 S2 2.80 S3 3.22   [polo_norteMG, Soja, M10, *]:= S1 2.24 S2 2.80 S3 3.22
+    [polo_norteMG, Soja, M11, *]:= S1 2.24 S2 2.80 S3 3.22   [polo_norteMG, Soja, M12, *]:= S1 2.24 S2 2.80 S3 3.22
+    [polo_norteMG, Soja, M13, *]:= S1 2.48 S2 3.10 S3 3.56   [polo_norteMG, Soja, M14, *]:= S1 2.48 S2 3.10 S3 3.56
+    [polo_norteMG, Soja, M15, *]:= S1 2.48 S2 3.10 S3 3.56   [polo_norteMG, Soja, M16, *]:= S1 2.48 S2 3.10 S3 3.56
+    [polo_norteMG, Soja, M17, *]:= S1 2.48 S2 3.10 S3 3.56   [polo_norteMG, Soja, M18, *]:= S1 2.48 S2 3.10 S3 3.56
+    [polo_norteMG, Soja, M19, *]:= S1 2.48 S2 3.10 S3 3.56   [polo_norteMG, Soja, M20, *]:= S1 2.48 S2 3.10 S3 3.56
+    [polo_norteMG, Soja, M21, *]:= S1 2.48 S2 3.10 S3 3.56   [polo_norteMG, Soja, M22, *]:= S1 2.48 S2 3.10 S3 3.56
+    [polo_norteMG, Soja, M23, *]:= S1 2.48 S2 3.10 S3 3.56   [polo_norteMG, Soja, M24, *]:= S1 2.48 S2 3.10 S3 3.56
 
+    [polo_norteMG, Algodao, M1, *]:= S1 1.76 S2 2.20 S3 2.53 [polo_norteMG, Algodao, M2, *]:= S1 1.76 S2 2.20 S3 2.53
+    [polo_norteMG, Algodao, M3, *]:= S1 1.76 S2 2.20 S3 2.53 [polo_norteMG, Algodao, M4, *]:= S1 1.76 S2 2.20 S3 2.53
+    [polo_norteMG, Algodao, M5, *]:= S1 1.76 S2 2.20 S3 2.53 [polo_norteMG, Algodao, M6, *]:= S1 1.76 S2 2.20 S3 2.53
+    [polo_norteMG, Algodao, M7, *]:= S1 1.76 S2 2.20 S3 2.53 [polo_norteMG, Algodao, M8, *]:= S1 1.76 S2 2.20 S3 2.53
+    [polo_norteMG, Algodao, M9, *]:= S1 1.76 S2 2.20 S3 2.53 [polo_norteMG, Algodao, M10, *]:= S1 1.76 S2 2.20 S3 2.53
+    [polo_norteMG, Algodao, M11, *]:= S1 1.76 S2 2.20 S3 2.53 [polo_norteMG, Algodao, M12, *]:= S1 1.76 S2 2.20 S3 2.53
+    [polo_norteMG, Algodao, M13, *]:= S1 1.92 S2 2.40 S3 2.76 [polo_norteMG, Algodao, M14, *]:= S1 1.92 S2 2.40 S3 2.76
+    [polo_norteMG, Algodao, M15, *]:= S1 1.92 S2 2.40 S3 2.76 [polo_norteMG, Algodao, M16, *]:= S1 1.92 S2 2.40 S3 2.76
+    [polo_norteMG, Algodao, M17, *]:= S1 1.92 S2 2.40 S3 2.76 [polo_norteMG, Algodao, M18, *]:= S1 1.92 S2 2.40 S3 2.76
+    [polo_norteMG, Algodao, M19, *]:= S1 1.92 S2 2.40 S3 2.76 [polo_norteMG, Algodao, M20, *]:= S1 1.92 S2 2.40 S3 2.76
+    [polo_norteMG, Algodao, M21, *]:= S1 1.92 S2 2.40 S3 2.76 [polo_norteMG, Algodao, M22, *]:= S1 1.92 S2 2.40 S3 2.76
+    [polo_norteMG, Algodao, M23, *]:= S1 1.92 S2 2.40 S3 2.76 [polo_norteMG, Algodao, M24, *]:= S1 1.92 S2 2.40 S3 2.76
+
+    [polo_norteMG, Macauba, M1, *]:= S1 2.80 S2 3.50 S3 4.02  [polo_norteMG, Macauba, M2, *]:= S1 2.80 S2 3.50 S3 4.02
+    [polo_norteMG, Macauba, M3, *]:= S1 2.80 S2 3.50 S3 4.02  [polo_norteMG, Macauba, M4, *]:= S1 2.80 S2 3.50 S3 4.02
+    [polo_norteMG, Macauba, M5, *]:= S1 2.80 S2 3.50 S3 4.02  [polo_norteMG, Macauba, M6, *]:= S1 2.80 S2 3.50 S3 4.02
+    [polo_norteMG, Macauba, M7, *]:= S1 2.80 S2 3.50 S3 4.02  [polo_norteMG, Macauba, M8, *]:= S1 2.80 S2 3.50 S3 4.02
+    [polo_norteMG, Macauba, M9, *]:= S1 2.80 S2 3.50 S3 4.02  [polo_norteMG, Macauba, M10, *]:= S1 2.80 S2 3.50 S3 4.02
+    [polo_norteMG, Macauba, M11, *]:= S1 2.80 S2 3.50 S3 4.02 [polo_norteMG, Macauba, M12, *]:= S1 2.80 S2 3.50 S3 4.02
+    [polo_norteMG, Macauba, M13, *]:= S1 3.04 S2 3.80 S3 4.37 [polo_norteMG, Macauba, M14, *]:= S1 3.04 S2 3.80 S3 4.37
+    [polo_norteMG, Macauba, M15, *]:= S1 3.04 S2 3.80 S3 4.37 [polo_norteMG, Macauba, M16, *]:= S1 3.04 S2 3.80 S3 4.37
+    [polo_norteMG, Macauba, M17, *]:= S1 3.04 S2 3.80 S3 4.37 [polo_norteMG, Macauba, M18, *]:= S1 3.04 S2 3.80 S3 4.37
+    [polo_norteMG, Macauba, M19, *]:= S1 3.04 S2 3.80 S3 4.37 [polo_norteMG, Macauba, M20, *]:= S1 3.04 S2 3.80 S3 4.37
+    [polo_norteMG, Macauba, M21, *]:= S1 3.04 S2 3.80 S3 4.37 [polo_norteMG, Macauba, M22, *]:= S1 3.04 S2 3.80 S3 4.37
+    [polo_norteMG, Macauba, M23, *]:= S1 3.04 S2 3.80 S3 4.37 [polo_norteMG, Macauba, M24, *]:= S1 3.04 S2 3.80 S3 4.37
+
+    [polo_norteMG, Girassol, M1, *]:= S1 1.20 S2 1.50 S3 1.72 [polo_norteMG, Girassol, M2, *]:= S1 1.20 S2 1.50 S3 1.72
+    [polo_norteMG, Girassol, M3, *]:= S1 1.20 S2 1.50 S3 1.72 [polo_norteMG, Girassol, M4, *]:= S1 1.20 S2 1.50 S3 1.72
+    [polo_norteMG, Girassol, M5, *]:= S1 1.20 S2 1.50 S3 1.72 [polo_norteMG, Girassol, M6, *]:= S1 1.20 S2 1.50 S3 1.72
+    [polo_norteMG, Girassol, M7, *]:= S1 1.20 S2 1.50 S3 1.72 [polo_norteMG, Girassol, M8, *]:= S1 1.20 S2 1.50 S3 1.72
+    [polo_norteMG, Girassol, M9, *]:= S1 1.20 S2 1.50 S3 1.72 [polo_norteMG, Girassol, M10, *]:= S1 1.20 S2 1.50 S3 1.72
+    [polo_norteMG, Girassol, M11, *]:= S1 1.20 S2 1.50 S3 1.72 [polo_norteMG, Girassol, M12, *]:= S1 1.20 S2 1.50 S3 1.72
+    [polo_norteMG, Girassol, M13, *]:= S1 1.36 S2 1.70 S3 1.95 [polo_norteMG, Girassol, M14, *]:= S1 1.36 S2 1.70 S3 1.95
+    [polo_norteMG, Girassol, M15, *]:= S1 1.36 S2 1.70 S3 1.95 [polo_norteMG, Girassol, M16, *]:= S1 1.36 S2 1.70 S3 1.95
+    [polo_norteMG, Girassol, M17, *]:= S1 1.36 S2 1.70 S3 1.95 [polo_norteMG, Girassol, M18, *]:= S1 1.36 S2 1.70 S3 1.95
+    [polo_norteMG, Girassol, M19, *]:= S1 1.36 S2 1.70 S3 1.95 [polo_norteMG, Girassol, M20, *]:= S1 1.36 S2 1.70 S3 1.95
+    [polo_norteMG, Girassol, M21, *]:= S1 1.36 S2 1.70 S3 1.95 [polo_norteMG, Girassol, M22, *]:= S1 1.36 S2 1.70 S3 1.95
+    [polo_norteMG, Girassol, M23, *]:= S1 1.36 S2 1.70 S3 1.95 [polo_norteMG, Girassol, M24, *]:= S1 1.36 S2 1.70 S3 1.95
+
+    [polo_norteMG, Nabo_Forrageiro, M1, *]:= S1 1.44 S2 1.80 S3 2.07 [polo_norteMG, Nabo_Forrageiro, M2, *]:= S1 1.44 S2 1.80 S3 2.07
+    [polo_norteMG, Nabo_Forrageiro, M3, *]:= S1 1.44 S2 1.80 S3 2.07 [polo_norteMG, Nabo_Forrageiro, M4, *]:= S1 1.44 S2 1.80 S3 2.07
+    [polo_norteMG, Nabo_Forrageiro, M5, *]:= S1 1.44 S2 1.80 S3 2.07 [polo_norteMG, Nabo_Forrageiro, M6, *]:= S1 1.44 S2 1.80 S3 2.07
+    [polo_norteMG, Nabo_Forrageiro, M7, *]:= S1 1.44 S2 1.80 S3 2.07 [polo_norteMG, Nabo_Forrageiro, M8, *]:= S1 1.44 S2 1.80 S3 2.07
+    [polo_norteMG, Nabo_Forrageiro, M9, *]:= S1 1.44 S2 1.80 S3 2.07 [polo_norteMG, Nabo_Forrageiro, M10, *]:= S1 1.44 S2 1.80 S3 2.07
+    [polo_norteMG, Nabo_Forrageiro, M11, *]:= S1 1.44 S2 1.80 S3 2.07 [polo_norteMG, Nabo_Forrageiro, M12, *]:= S1 1.44 S2 1.80 S3 2.07
+    [polo_norteMG, Nabo_Forrageiro, M13, *]:= S1 1.60 S2 2.00 S3 2.30 [polo_norteMG, Nabo_Forrageiro, M14, *]:= S1 1.60 S2 2.00 S3 2.30
+    [polo_norteMG, Nabo_Forrageiro, M15, *]:= S1 1.60 S2 2.00 S3 2.30 [polo_norteMG, Nabo_Forrageiro, M16, *]:= S1 1.60 S2 2.00 S3 2.30
+    [polo_norteMG, Nabo_Forrageiro, M17, *]:= S1 1.60 S2 2.00 S3 2.30 [polo_norteMG, Nabo_Forrageiro, M18, *]:= S1 1.60 S2 2.00 S3 2.30
+    [polo_norteMG, Nabo_Forrageiro, M19, *]:= S1 1.60 S2 2.00 S3 2.30 [polo_norteMG, Nabo_Forrageiro, M20, *]:= S1 1.60 S2 2.00 S3 2.30
+    [polo_norteMG, Nabo_Forrageiro, M21, *]:= S1 1.60 S2 2.00 S3 2.30 [polo_norteMG, Nabo_Forrageiro, M22, *]:= S1 1.60 S2 2.00 S3 2.30
+    [polo_norteMG, Nabo_Forrageiro, M23, *]:= S1 1.60 S2 2.00 S3 2.30 [polo_norteMG, Nabo_Forrageiro, M24, *]:= S1 1.60 S2 2.00 S3 2.30
+
+    [polo_semiarido, Soja, M1, *]:= S1 1.68 S2 2.10 S3 2.41   [polo_semiarido, Soja, M2, *]:= S1 1.68 S2 2.10 S3 2.41
+    [polo_semiarido, Soja, M3, *]:= S1 1.68 S2 2.10 S3 2.41   [polo_semiarido, Soja, M4, *]:= S1 1.68 S2 2.10 S3 2.41
+    [polo_semiarido, Soja, M5, *]:= S1 1.68 S2 2.10 S3 2.41   [polo_semiarido, Soja, M6, *]:= S1 1.68 S2 2.10 S3 2.41
+    [polo_semiarido, Soja, M7, *]:= S1 1.68 S2 2.10 S3 2.41   [polo_semiarido, Soja, M8, *]:= S1 1.68 S2 2.10 S3 2.41
+    [polo_semiarido, Soja, M9, *]:= S1 1.68 S2 2.10 S3 2.41   [polo_semiarido, Soja, M10, *]:= S1 1.68 S2 2.10 S3 2.41
+    [polo_semiarido, Soja, M11, *]:= S1 1.68 S2 2.10 S3 2.41  [polo_semiarido, Soja, M12, *]:= S1 1.68 S2 2.10 S3 2.41
+    [polo_semiarido, Soja, M13, *]:= S1 1.84 S2 2.30 S3 2.64  [polo_semiarido, Soja, M14, *]:= S1 1.84 S2 2.30 S3 2.64
+    [polo_semiarido, Soja, M15, *]:= S1 1.84 S2 2.30 S3 2.64  [polo_semiarido, Soja, M16, *]:= S1 1.84 S2 2.30 S3 2.64
+    [polo_semiarido, Soja, M17, *]:= S1 1.84 S2 2.30 S3 2.64  [polo_semiarido, Soja, M18, *]:= S1 1.84 S2 2.30 S3 2.64
+    [polo_semiarido, Soja, M19, *]:= S1 1.84 S2 2.30 S3 2.64  [polo_semiarido, Soja, M20, *]:= S1 1.84 S2 2.30 S3 2.64
+    [polo_semiarido, Soja, M21, *]:= S1 1.84 S2 2.30 S3 2.64  [polo_semiarido, Soja, M22, *]:= S1 1.84 S2 2.30 S3 2.64
+    [polo_semiarido, Soja, M23, *]:= S1 1.84 S2 2.30 S3 2.64  [polo_semiarido, Soja, M24, *]:= S1 1.84 S2 2.30 S3 2.64
+
+    [polo_semiarido, Algodao, M1, *]:= S1 1.36 S2 1.70 S3 1.95 [polo_semiarido, Algodao, M2, *]:= S1 1.36 S2 1.70 S3 1.95
+    [polo_semiarido, Algodao, M3, *]:= S1 1.36 S2 1.70 S3 1.95 [polo_semiarido, Algodao, M4, *]:= S1 1.36 S2 1.70 S3 1.95
+    [polo_semiarido, Algodao, M5, *]:= S1 1.36 S2 1.70 S3 1.95 [polo_semiarido, Algodao, M6, *]:= S1 1.36 S2 1.70 S3 1.95
+    [polo_semiarido, Algodao, M7, *]:= S1 1.36 S2 1.70 S3 1.95 [polo_semiarido, Algodao, M8, *]:= S1 1.36 S2 1.70 S3 1.95
+    [polo_semiarido, Algodao, M9, *]:= S1 1.36 S2 1.70 S3 1.95 [polo_semiarido, Algodao, M10, *]:= S1 1.36 S2 1.70 S3 1.95
+    [polo_semiarido, Algodao, M11, *]:= S1 1.36 S2 1.70 S3 1.95 [polo_semiarido, Algodao, M12, *]:= S1 1.36 S2 1.70 S3 1.95
+    [polo_semiarido, Algodao, M13, *]:= S1 1.52 S2 1.90 S3 2.18 [polo_semiarido, Algodao, M14, *]:= S1 1.52 S2 1.90 S3 2.18
+    [polo_semiarido, Algodao, M15, *]:= S1 1.52 S2 1.90 S3 2.18 [polo_semiarido, Algodao, M16, *]:= S1 1.52 S2 1.90 S3 2.18
+    [polo_semiarido, Algodao, M17, *]:= S1 1.52 S2 1.90 S3 2.18 [polo_semiarido, Algodao, M18, *]:= S1 1.52 S2 1.90 S3 2.18
+    [polo_semiarido, Algodao, M19, *]:= S1 1.52 S2 1.90 S3 2.18 [polo_semiarido, Algodao, M20, *]:= S1 1.52 S2 1.90 S3 2.18
+    [polo_semiarido, Algodao, M21, *]:= S1 1.52 S2 1.90 S3 2.18 [polo_semiarido, Algodao, M22, *]:= S1 1.52 S2 1.90 S3 2.18
+    [polo_semiarido, Algodao, M23, *]:= S1 1.52 S2 1.90 S3 2.18 [polo_semiarido, Algodao, M24, *]:= S1 1.52 S2 1.90 S3 2.18
+
+    [polo_semiarido, Macauba, M1, *]:= S1 2.32 S2 2.90 S3 3.33  [polo_semiarido, Macauba, M2, *]:= S1 2.32 S2 2.90 S3 3.33
+    [polo_semiarido, Macauba, M3, *]:= S1 2.32 S2 2.90 S3 3.33  [polo_semiarido, Macauba, M4, *]:= S1 2.32 S2 2.90 S3 3.33
+    [polo_semiarido, Macauba, M5, *]:= S1 2.32 S2 2.90 S3 3.33  [polo_semiarido, Macauba, M6, *]:= S1 2.32 S2 2.90 S3 3.33
+    [polo_semiarido, Macauba, M7, *]:= S1 2.32 S2 2.90 S3 3.33  [polo_semiarido, Macauba, M8, *]:= S1 2.32 S2 2.90 S3 3.33
+    [polo_semiarido, Macauba, M9, *]:= S1 2.32 S2 2.90 S3 3.33  [polo_semiarido, Macauba, M10, *]:= S1 2.32 S2 2.90 S3 3.33
+    [polo_semiarido, Macauba, M11, *]:= S1 2.32 S2 2.90 S3 3.33 [polo_semiarido, Macauba, M12, *]:= S1 2.32 S2 2.90 S3 3.33
+    [polo_semiarido, Macauba, M13, *]:= S1 2.48 S2 3.10 S3 3.56 [polo_semiarido, Macauba, M14, *]:= S1 2.48 S2 3.10 S3 3.56
+    [polo_semiarido, Macauba, M15, *]:= S1 2.48 S2 3.10 S3 3.56 [polo_semiarido, Macauba, M16, *]:= S1 2.48 S2 3.10 S3 3.56
+    [polo_semiarido, Macauba, M17, *]:= S1 2.48 S2 3.10 S3 3.56 [polo_semiarido, Macauba, M18, *]:= S1 2.48 S2 3.10 S3 3.56
+    [polo_semiarido, Macauba, M19, *]:= S1 2.48 S2 3.10 S3 3.56 [polo_semiarido, Macauba, M20, *]:= S1 2.48 S2 3.10 S3 3.56
+    [polo_semiarido, Macauba, M21, *]:= S1 2.48 S2 3.10 S3 3.56 [polo_semiarido, Macauba, M22, *]:= S1 2.48 S2 3.10 S3 3.56
+    [polo_semiarido, Macauba, M23, *]:= S1 2.48 S2 3.10 S3 3.56 [polo_semiarido, Macauba, M24, *]:= S1 2.48 S2 3.10 S3 3.56
+
+    [polo_semiarido, Girassol, M1, *]:= S1 0.96 S2 1.20 S3 1.38 [polo_semiarido, Girassol, M2, *]:= S1 0.96 S2 1.20 S3 1.38
+    [polo_semiarido, Girassol, M3, *]:= S1 0.96 S2 1.20 S3 1.38 [polo_semiarido, Girassol, M4, *]:= S1 0.96 S2 1.20 S3 1.38
+    [polo_semiarido, Girassol, M5, *]:= S1 0.96 S2 1.20 S3 1.38 [polo_semiarido, Girassol, M6, *]:= S1 0.96 S2 1.20 S3 1.38
+    [polo_semiarido, Girassol, M7, *]:= S1 0.96 S2 1.20 S3 1.38 [polo_semiarido, Girassol, M8, *]:= S1 0.96 S2 1.20 S3 1.38
+    [polo_semiarido, Girassol, M9, *]:= S1 0.96 S2 1.20 S3 1.38 [polo_semiarido, Girassol, M10, *]:= S1 0.96 S2 1.20 S3 1.38
+    [polo_semiarido, Girassol, M11, *]:= S1 0.96 S2 1.20 S3 1.38 [polo_semiarido, Girassol, M12, *]:= S1 0.96 S2 1.20 S3 1.38
+    [polo_semiarido, Girassol, M13, *]:= S1 1.04 S2 1.30 S3 1.49 [polo_semiarido, Girassol, M14, *]:= S1 1.04 S2 1.30 S3 1.49
+    [polo_semiarido, Girassol, M15, *]:= S1 1.04 S2 1.30 S3 1.49 [polo_semiarido, Girassol, M16, *]:= S1 1.04 S2 1.30 S3 1.49
+    [polo_semiarido, Girassol, M17, *]:= S1 1.04 S2 1.30 S3 1.49 [polo_semiarido, Girassol, M18, *]:= S1 1.04 S2 1.30 S3 1.49
+    [polo_semiarido, Girassol, M19, *]:= S1 1.04 S2 1.30 S3 1.49 [polo_semiarido, Girassol, M20, *]:= S1 1.04 S2 1.30 S3 1.49
+    [polo_semiarido, Girassol, M21, *]:= S1 1.04 S2 1.30 S3 1.49 [polo_semiarido, Girassol, M22, *]:= S1 1.04 S2 1.30 S3 1.49
+    [polo_semiarido, Girassol, M23, *]:= S1 1.04 S2 1.30 S3 1.49 [polo_semiarido, Girassol, M24, *]:= S1 1.04 S2 1.30 S3 1.49
+
+    [polo_semiarido, Nabo_Forrageiro, M1, *]:= S1 1.12 S2 1.40 S3 1.61 [polo_semiarido, Nabo_Forrageiro, M2, *]:= S1 1.12 S2 1.40 S3 1.61
+    [polo_semiarido, Nabo_Forrageiro, M3, *]:= S1 1.12 S2 1.40 S3 1.61 [polo_semiarido, Nabo_Forrageiro, M4, *]:= S1 1.12 S2 1.40 S3 1.61
+    [polo_semiarido, Nabo_Forrageiro, M5, *]:= S1 1.12 S2 1.40 S3 1.61 [polo_semiarido, Nabo_Forrageiro, M6, *]:= S1 1.12 S2 1.40 S3 1.61
+    [polo_semiarido, Nabo_Forrageiro, M7, *]:= S1 1.12 S2 1.40 S3 1.61 [polo_semiarido, Nabo_Forrageiro, M8, *]:= S1 1.12 S2 1.40 S3 1.61
+    [polo_semiarido, Nabo_Forrageiro, M9, *]:= S1 1.12 S2 1.40 S3 1.61 [polo_semiarido, Nabo_Forrageiro, M10, *]:= S1 1.12 S2 1.40 S3 1.61
+    [polo_semiarido, Nabo_Forrageiro, M11, *]:= S1 1.12 S2 1.40 S3 1.61 [polo_semiarido, Nabo_Forrageiro, M12, *]:= S1 1.12 S2 1.40 S3 1.61
+    [polo_semiarido, Nabo_Forrageiro, M13, *]:= S1 1.20 S2 1.50 S3 1.72 [polo_semiarido, Nabo_Forrageiro, M14, *]:= S1 1.20 S2 1.50 S3 1.72
+    [polo_semiarido, Nabo_Forrageiro, M15, *]:= S1 1.20 S2 1.50 S3 1.72 [polo_semiarido, Nabo_Forrageiro, M16, *]:= S1 1.20 S2 1.50 S3 1.72
+    [polo_semiarido, Nabo_Forrageiro, M17, *]:= S1 1.20 S2 1.50 S3 1.72 [polo_semiarido, Nabo_Forrageiro, M18, *]:= S1 1.20 S2 1.50 S3 1.72
+    [polo_semiarido, Nabo_Forrageiro, M19, *]:= S1 1.20 S2 1.50 S3 1.72 [polo_semiarido, Nabo_Forrageiro, M20, *]:= S1 1.20 S2 1.50 S3 1.72
+    [polo_semiarido, Nabo_Forrageiro, M21, *]:= S1 1.20 S2 1.50 S3 1.72 [polo_semiarido, Nabo_Forrageiro, M22, *]:= S1 1.20 S2 1.50 S3 1.72
+    [polo_semiarido, Nabo_Forrageiro, M23, *]:= S1 1.20 S2 1.50 S3 1.72 [polo_semiarido, Nabo_Forrageiro, M24, *]:= S1 1.20 S2 1.50 S3 1.72;
+
+# Lote médio por família
 param AZ :=
     [polo_norteMG, *]   := M1 12.0 M2 12.0 M3 12.0 M4 12.0 M5 12.0 M6 12.0 M7 12.0 M8 12.0 M9 12.0 M10 12.0 M11 12.0 M12 12.0
                            M13 12.0 M14 12.0 M15 12.0 M16 12.0 M17 12.0 M18 12.0 M19 12.0 M20 12.0 M21 12.0 M22 12.0 M23 12.0 M24 12.0
     [polo_semiarido, *] := M1 15.0 M2 15.0 M3 15.0 M4 15.0 M5 15.0 M6 15.0 M7 15.0 M8 15.0 M9 15.0 M10 15.0 M11 15.0 M12 15.0
                            M13 15.0 M14 15.0 M15 15.0 M16 15.0 M17 15.0 M18 15.0 M19 15.0 M20 15.0 M21 15.0 M22 15.0 M23 15.0 M24 15.0;
 
+# Área disponível máxima por polo, cultura e mês (Z_barra)
 param Z_barra :=
-    [polo_norteMG, Soja, *]             := M1 2500 M2 2500 M3 2500 M4 2500 M5 2500 M6 2500 M7 2500 M8 2500 M9 2500 M10 2500 M11 2500 M12 2500
-                                           M13 3000 M14 3000 M15 3000 M16 3000 M17 3000 M18 3000 M19 3000 M20 3000 M21 3000 M22 3000 M23 3000 M24 3000
-    [polo_norteMG, Algodao, *]          := M1 1000 M13 1200 # (e assim por diante para os 24 meses)
-    # ... (demais culturas e polos)
-    [polo_semiarido, Nabo_Forrageiro, *]:= M1 300  M13 350;
+    [polo_norteMG, Soja, *]             := M1 2500 M2 2500 M3 2500 M4 2500 M5 2500 M6 2500 M7 2500 M8 2500 M9 2500 M10 2500 M11 2500 M12 2500 M13 3000 M14 3000 M15 3000 M16 3000 M17 3000 M18 3000 M19 3000 M20 3000 M21 3000 M22 3000 M23 3000 M24 3000
+    [polo_norteMG, Algodao, *]          := M1 1000 M2 1000 M3 1000 M4 1000 M5 1000 M6 1000 M7 1000 M8 1000 M9 1000 M10 1000 M11 1000 M12 1000 M13 1200 M14 1200 M15 1200 M16 1200 M17 1200 M18 1200 M19 1200 M20 1200 M21 1200 M22 1200 M23 1200 M24 1200
+    [polo_norteMG, Macauba, *]          := M1 500 M2 500 M3 500 M4 500 M5 500 M6 500 M7 500 M8 500 M9 500 M10 500 M11 500 M12 500 M13 600 M14 600 M15 600 M16 600 M17 600 M18 600 M19 600 M20 600 M21 600 M22 600 M23 600 M24 600
+    [polo_norteMG, Girassol, *]         := M1 300 M2 300 M3 300 M4 300 M5 300 M6 300 M7 300 M8 300 M9 300 M10 300 M11 300 M12 300 M13 400 M14 400 M15 400 M16 400 M17 400 M18 400 M19 400 M20 400 M21 400 M22 400 M23 400 M24 400
+    [polo_norteMG, Nabo_Forrageiro, *]  := M1 200 M2 200 M3 200 M4 200 M5 200 M6 200 M7 200 M8 200 M9 200 M10 200 M11 200 M12 200 M13 300 M14 300 M15 300 M16 300 M17 300 M18 300 M19 300 M20 300 M21 300 M22 300 M23 300 M24 300
 
+    [polo_semiarido, Soja, *]           := M1 1600 M2 1600 M3 1600 M4 1600 M5 1600 M6 1600 M7 1600 M8 1600 M9 1600 M10 1600 M11 1600 M12 1600 M13 1800 M14 1800 M15 1800 M16 1800 M17 1800 M18 1800 M19 1800 M20 1800 M21 1800 M22 1800 M23 1800 M24 1800
+    [polo_semiarido, Algodao, *]        := M1 700 M2 700 M3 700 M4 700 M5 700 M6 700 M7 700 M8 700 M9 700 M10 700 M11 700 M12 700 M13 800 M14 800 M15 800 M16 800 M17 800 M18 800 M19 800 M20 800 M21 800 M22 800 M23 800 M24 800
+    [polo_semiarido, Macauba, *]        := M1 500 M2 500 M3 500 M4 500 M5 500 M6 500 M7 500 M8 500 M9 500 M10 500 M11 500 M12 500 M13 600 M14 600 M15 600 M16 600 M17 600 M18 600 M19 600 M20 600 M21 600 M22 600 M23 600 M24 600
+    [polo_semiarido, Girassol, *]       := M1 250 M2 250 M3 250 M4 250 M5 250 M6 250 M7 250 M8 250 M9 250 M10 250 M11 250 M12 250 M13 300 M14 300 M15 300 M16 300 M17 300 M18 300 M19 300 M20 300 M21 300 M22 300 M23 300 M24 300
+    [polo_semiarido, Nabo_Forrageiro, *]:= M1 250 M2 250 M3 250 M4 250 M5 250 M6 250 M7 250 M8 250 M9 250 M10 250 M11 250 M12 250 M13 300 M14 300 M15 300 M16 300 M17 300 M18 300 M19 300 M20 300 M21 300 M22 300 M23 300 M24 300;
+
+# Meta mensal do Selo Social
 param TF := 
-    M1 150  M2 150  M3 150  M4 150  M5 150  M6 150  
-    M7 150  M8 150  M9 150  M10 150 M11 150 M12 150
-    M13 180 M14 180 M15 180 M16 180 M17 180 M18 180
-    M19 180 M20 180 M21 180 M22 180 M23 180 M24 180;  # meta mensal de famílias do Selo Social
+    M1 150 M2 150 M3 150 M4 150 M5 150 M6 150 M7 150 M8 150 M9 150 M10 150 M11 150 M12 150
+    M13 180 M14 180 M15 180 M16 180 M17 180 M18 180 M19 180 M20 180 M21 180 M22 180 M23 180 M24 180;
 
+# Oferta mensal de OGR
 param OfertaOGR :=
     [rede_catadores_moc, *] := M1 7500 M2 7500 M3 7500 M4 7500 M5 7500 M6 7500 M7 7500 M8 7500 M9 7500 M10 7500 M11 7500 M12 7500
                                M13 8300 M14 8300 M15 8300 M16 8300 M17 8300 M18 8300 M19 8300 M20 8300 M21 8300 M22 8300 M23 8300 M24 8300
     [rede_urbana, *]        := M1 1600 M2 1600 M3 1600 M4 1600 M5 1600 M6 1600 M7 1600 M8 1600 M9 1600 M10 1600 M11 1600 M12 1600
                                M13 2000 M14 2000 M15 2000 M16 2000 M17 2000 M18 2000 M19 2000 M20 2000 M21 2000 M22 2000 M23 2000 M24 2000;
 
+# Compra máxima mensal de óleo externo
 param CompraMax := 
-    M1 1250  M2 1250  M3 1250  M4 1250  M5 1250  M6 1250
-    M7 1250  M8 1250  M9 1250  M10 1250 M11 1250 M12 1250
-    M13 1660 M14 1660 M15 1660 M16 1660 M17 1660 M18 1660
-    M19 1660 M20 1660 M21 1660 M22 1660 M23 1660 M24 1660;
+    M1 1250 M2 1250 M3 1250 M4 1250 M5 1250 M6 1250 M7 1250 M8 1250 M9 1250 M10 1250 M11 1250 M12 1250
+    M13 1660 M14 1660 M15 1660 M16 1660 M17 1660 M18 1660 M19 1660 M20 1660 M21 1660 M22 1660 M23 1660 M24 1660;
 
 end;
