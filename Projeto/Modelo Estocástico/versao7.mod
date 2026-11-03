@@ -1,5 +1,5 @@
 # ========================================================================================================================
-# MODELO DE OTIMIZAÇÃO DA CADEIA DE SUPRIMENTOS - PBIO (VERSÃO 6 - Modelo Estocástico)
+# MODELO DE OTIMIZAÇÃO DA CADEIA DE SUPRIMENTOS - PBIO (VERSÃO 7 - Modelo Estocástico)
 # ========================================================================================================================
 
 # CONJUNTOS (Índices)
@@ -396,8 +396,8 @@ printf ">>  RECOMENDAÇÕES:\n";
 printf "------------------------------------------------------------------------------------\n";
 printf "|                         PLANO DE AÇÃO (S&OP)                                     |\n";
 printf "--------------------------+-------------------------+-------------------------------\n";
-printf "| 1. EXPANSAO DE SILOS    | 2. CONTRATOS DE OGR     | 3. HEDGE DE LOGISTICA        |\n";
-printf "| Investimento focado no  | Trava de preÇo e volume | Modulacao contratual de      |\n";
+printf "| 1. EXPANSAO DE SILOS    | 2. CONTRATOS DE OGR     | 3. LOGISTICA                 |\n";
+printf "| Investimento focado no  | Trava de preço e volume | Modulacao contratual de      |\n";
 printf "| destravamento do pico   | para expandir OGR alem  | frete no pico da safra       |\n";
 printf "| de colheita (t=5 a t=7).| dos 14%% regulatorios.   | (evitar gargalo de descarga).|\n";
 printf "--------------------------+-------------------------+-------------------------------\n\n";
