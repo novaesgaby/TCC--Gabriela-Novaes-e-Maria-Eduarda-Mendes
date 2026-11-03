@@ -1,0 +1,290 @@
+# =============================================================================================================
+# SEÇÃO DE DADOS (DATA) - MODELO PBIO (VERSÃO 6 ESTOCÁSTICO - 24 PERÍODOS)
+# =============================================================================================================
+
+data;
+
+# Conjuntos 
+set P := polo_norteMG polo_semiarido;
+set R := rede_catadores_moc rede_urbana;
+set M := Soja Algodao Macauba Girassol Nabo_Forrageiro;
+set S := S1 S2 S3;                                      # Conjunto de cenários
+
+# Probabilidade de cada cenário ocorrer (pi_omega)
+param pi :=
+    S1  0.2
+    S2  0.5
+    S3  0.3;
+
+# Parâmetros de rendimento e perdas de cada matéria-prima (m)
+param alfa :=
+    Soja              0.18
+    Algodao           0.15
+    Macauba           0.28
+    Girassol          0.40
+    Nabo_Forrageiro   0.35;
+
+# Preços e receitas
+param preco_biodiesel := 4500.0;         # valor da venda unitária do biodiesel R$ 4.500,00 por tonelada
+param preco_glicerina := 1200.0;         # valor de venda unitária do coproduto (glicerina)
+param rend_glicerina  := 0.10;           # rendimento da glicerina
+param preco_carbono   := 50.0;           # créditos de carbono gerados pelo processo
+
+param preco_farelo :=
+    Soja              800.0                # preço de venda do farelo de soja: R$ 800,00 por tonelada
+    Algodao           650.0                # preço de venda do farelo de algodão: R$ 650,00 por tonelada
+    Macauba           500.0                # preço de venda do farelo de macaúba: R$ 500,00 por tonelada
+    Girassol          700.0                # preço de venda do farelo de girassol: R$ 700,00 por tonelada
+    Nabo_Forrageiro   600.0;               # preço de venda do farelo de nabo: R$ 600,00 por tonelada
+
+param rend_farelo :=
+    Soja              0.75                 # rendimento do farelo de cada matéria-prima
+    Algodao           0.55
+    Macauba           0.50
+    Girassol          0.50
+    Nabo_Forrageiro   0.45;
+
+# Custos e capacidades gerais
+param CC := 45.0;                           # Custo de Conversão | R$ 45,00 por tonelada 
+param Capacidade_Usina := 16362.0;           # Capacidade mensal proporcional (~16.3k t/mês)
+
+param Custo_Estoque_Semente :=
+    Soja              15.0
+    Algodao           12.0
+    Macauba           10.0
+    Girassol          14.0
+    Nabo_Forrageiro   11.0;
+
+param Custo_Fixo_Polo :=
+    polo_norteMG    500000.0                # 500 K
+    polo_semiarido  400000.0;
+
+param Custo_Fixo_OGR :=
+    rede_catadores_moc 150000.0            # 150 K
+    rede_urbana        200000.0;
+
+# Limites operacionais variáveis por mês (1 a 24) para simular gargalos logísticos sazonais
+param Cap_Descarga := 
+    1  12000  2  12000  3  14000  4  15000  5  15000  6  14000  7  12000  8  11000  9  11000  10 11000  11 12000  12 12000
+    13 13000  14 13000  15 15000  16 16000  17 16000  18 15000  19 13000  20 12000  21 12000  22 13000  23 13000  24 13000;
+
+param Cap_Armazenagem := 
+    1  7500   2  7500   3  9000   4  10000  5  10000  6  9000   7  8000   8  7500   9  7500   10 7500   11 7500   12 7500
+    13 8000   14 8000   15 9500   16 10500  17 10500  18 9500   19 8500   20 8000   21 8000   22 8000   23 8000   24 8000;
+
+param Cap_Frota_Caminhoes := 
+    1  12000  2  12000  3  14000  4  15000  5  15000  6  14000  7  12000  8  11000  9  11000  10 11000  11 12000  12 12000
+    13 13000  14 13000  15 15000  16 16000  17 16000  18 15000  19 13000  20 12000  21 12000  22 13000  23 13000  24 13000;
+
+param Cap_Carregamento := 
+    1  11000  2  11000  3  12000  4  13000  5  13000  6  12000  7  11000  8  11000  9  11000  10 11000  11 11000  12 11000
+    13 12000  14 12000  15 13000  16 14000  17 14000  18 13000  19 12000  20 12000  21 12000  22 12000  23 12000  24 12000;
+
+param C_OGR := rede_catadores_moc 110.0 rede_urbana 125.0;
+
+param PC :=
+    [polo_norteMG, *]   := Soja 140.0 Algodao 160.0 Macauba 120.0 Girassol 150.0 Nabo_Forrageiro 130.0
+    [polo_semiarido, *] := Soja 155.0 Algodao 175.0 Macauba 135.0 Girassol 165.0 Nabo_Forrageiro 145.0;
+
+param GTC := polo_norteMG 18.0 polo_semiarido 25.0;
+
+# Demanda estocástica sazonal por cenário (S1=Baixa/Seca, S2=Médio, S3=Alta/Aquecida) para os 24 meses
+param D :=
+    [1, *]  := S1 7000 S2 8000 S3 9550    [2, *]  := S1 6900 S2 8150 S3 9600
+    [3, *]  := S1 7300 S2 8300 S3 9800    [4, *]  := S1 7500 S2 8500 S3 10000
+    [5, *]  := S1 7600 S2 8700 S3 10200   [6, *]  := S1 7400 S2 8400 S3 9900
+    [7, *]  := S1 7200 S2 8200 S3 9700    [8, *]  := S1 7000 S2 8000 S3 9500
+    [9, *]  := S1 6500 S2 7900 S3 9400    [10, *] := S1 7100 S2 8100 S3 9600
+    [11, *] := S1 7100 S2 8300 S3 9800    [12, *] := S1 7500 S2 8500 S3 10100
+    [13, *] := S1 7800 S2 9200 S3 11000   [14, *] := S1 8200 S2 9400 S3 11200
+    [15, *] := S1 8300 S2 9700 S3 11500   [16, *] := S1 8800 S2 10000 S3 11800
+    [17, *] := S1 8200 S2 9800 S3 11600   [18, *] := S1 8300 S2 9500 S3 11300
+    [19, *] := S1 8000 S2 9300 S3 11100   [20, *] := S1 7900 S2 9100 S3 10900
+    [21, *] := S1 7900 S2 9200 S3 11000   [22, *] := S1 8200 S2 9400 S3 11300
+    [23, *] := S1 8050 S2 9600 S3 11500   [24, *] := S1 8600 S2 9800 S3 11700;
+
+# Custo do óleo externo estocástico e variável (fica mais caro nos meses de entressafra/escassez)
+param v_cost :=
+    [1, *]  := S1 450.0 S2 410.0 S3 380.0    [2, *]  := S1 460.0 S2 420.0 S3 390.0
+    [3, *]  := S1 420.0 S2 390.0 S3 360.0    [4, *]  := S1 400.0 S2 370.0 S3 340.0  # Safra (preço cai)
+    [5, *]  := S1 390.0 S2 360.0 S3 330.0    [6, *]  := S1 410.0 S2 380.0 S3 350.0
+    [7, *]  := S1 440.0 S2 400.0 S3 370.0    [8, *]  := S1 480.0 S2 430.0 S3 390.0
+    [9, *]  := S1 520.0 S2 470.0 S3 420.0    [10, *] := S1 550.0 S2 500.0 S3 450.0  # Entressafra (preço sobe)
+    [11, *] := S1 530.0 S2 480.0 S3 430.0    [12, *] := S1 490.0 S2 440.0 S3 400.0
+    [13, *] := S1 470.0 S2 430.0 S3 390.0   [14, *] := S1 480.0 S2 440.0 S3 400.0
+    [15, *] := S1 440.0 S2 400.0 S3 370.0   [16, *] := S1 420.0 S2 380.0 S3 350.0  # Safra ano 2
+    [17, *] := S1 410.0 S2 370.0 S3 340.0   [18, *] := S1 430.0 S2 390.0 S3 360.0
+    [19, *] := S1 460.0 S2 420.0 S3 380.0   [20, *] := S1 500.0 S2 450.0 S3 410.0
+    [21, *] := S1 540.0 S2 490.0 S3 440.0   [22, *] := S1 560.0 S2 510.0 S3 460.0
+    [23, *] := S1 520.0 S2 470.0 S3 420.0   [24, *] := S1 480.0 S2 440.0 S3 400.0;
+
+# Produtividade agrícola estocástica e sazonal (gama): S1 = Seca/Baixa, S2 = Médio, S3 = Super Safra. 
+# Note o pico nos meses de colheita (ex: meses 4 a 6 e 16 a 18) e baixa nos demais.
+param gama :=
+    # --- POLO NORTE MG (Soja) ---
+    [polo_norteMG, Soja, 1, *] := S1 1.50 S2 2.20 S3 2.80    [polo_norteMG, Soja, 2, *] := S1 1.60 S2 2.30 S3 2.90
+    [polo_norteMG, Soja, 3, *] := S1 2.00 S2 2.70 S3 3.30    [polo_norteMG, Soja, 4, *] := S1 2.50 S2 3.50 S3 4.20  # Pico Safra
+    [polo_norteMG, Soja, 5, *] := S1 2.60 S2 3.60 S3 4.40  # Pico Safra
+    [polo_norteMG, Soja, 6, *] := S1 2.20 S2 3.10 S3 3.80
+    [polo_norteMG, Soja, 7, *] := S1 1.80 S2 2.50 S3 3.10    [polo_norteMG, Soja, 8, *] := S1 1.40 S2 2.00 S3 2.50
+    [polo_norteMG, Soja, 9, *] := S1 1.20 S2 1.80 S3 2.30    [polo_norteMG, Soja, 10, *]:= S1 1.30 S2 1.90 S3 2.40
+    [polo_norteMG, Soja, 11, *]:= S1 1.40 S2 2.10 S3 2.60    [polo_norteMG, Soja, 12, *]:= S1 1.50 S2 2.20 S3 2.80
+    [polo_norteMG, Soja, 13, *]:= S1 1.60 S2 2.30 S3 2.90   [polo_norteMG, Soja, 14, *]:= S1 1.80 S2 2.50 S3 3.10
+    [polo_norteMG, Soja, 15, *]:= S1 2.10 S2 2.90 S3 3.50   [polo_norteMG, Soja, 16, *]:= S1 2.70 S2 3.70 S3 4.50  # Pico Safra Ano 2
+    [polo_norteMG, Soja, 17, *]:= S1 2.80 S2 3.80 S3 4.60  # Pico Safra Ano 2
+    [polo_norteMG, Soja, 18, *]:= S1 2.30 S2 3.20 S3 3.90   [polo_norteMG, Soja, 19, *]:= S1 1.90 S2 2.60 S3 3.20
+    [polo_norteMG, Soja, 20, *]:= S1 1.50 S2 2.10 S3 2.60   [polo_norteMG, Soja, 21, *]:= S1 1.30 S2 1.90 S3 2.40
+    [polo_norteMG, Soja, 22, *]:= S1 1.40 S2 2.00 S3 2.50   [polo_norteMG, Soja, 23, *]:= S1 1.50 S2 2.20 S3 2.70
+    [polo_norteMG, Soja, 24, *]:= S1 1.60 S2 2.30 S3 2.80
+
+    # Para manter a integridade do modelo, segue a mesma lógica proporcional de safra/entressafra para as demais culturas e polos:
+    [polo_norteMG, Algodao, 1, *]:= S1 1.20 S2 1.70 S3 2.20 [polo_norteMG, Algodao, 2, *]:= S1 1.30 S2 1.80 S3 2.30
+    [polo_norteMG, Algodao, 3, *]:= S1 1.50 S2 2.10 S3 2.60 [polo_norteMG, Algodao, 4, *]:= S1 1.90 S2 2.60 S3 3.20
+    [polo_norteMG, Algodao, 5, *]:= S1 2.00 S2 2.70 S3 3.30 [polo_norteMG, Algodao, 6, *]:= S1 1.70 S2 2.30 S3 2.90
+    [polo_norteMG, Algodao, 7, *]:= S1 1.40 S2 1.90 S3 2.40 [polo_norteMG, Algodao, 8, *]:= S1 1.10 S2 1.50 S3 1.90
+    [polo_norteMG, Algodao, 9, *]:= S1 1.00 S2 1.40 S3 1.80 [polo_norteMG, Algodao, 10, *]:= S1 1.00 S2 1.40 S3 1.80
+    [polo_norteMG, Algodao, 11, *]:= S1 1.10 S2 1.60 S3 2.00 [polo_norteMG, Algodao, 12, *]:= S1 1.20 S2 1.70 S3 2.20
+    [polo_norteMG, Algodao, 13, *]:= S1 1.30 S2 1.80 S3 2.30 [polo_norteMG, Algodao, 14, *]:= S1 1.40 S2 1.90 S3 2.40
+    [polo_norteMG, Algodao, 15, *]:= S1 1.60 S2 2.20 S3 2.70 [polo_norteMG, Algodao, 16, *]:= S1 2.10 S2 2.80 S3 3.40
+    [polo_norteMG, Algodao, 17, *]:= S1 2.20 S2 2.90 S3 3.50 [polo_norteMG, Algodao, 18, *]:= S1 1.80 S2 2.40 S3 3.00
+    [polo_norteMG, Algodao, 19, *]:= S1 1.50 S2 2.00 S3 2.50 [polo_norteMG, Algodao, 20, *]:= S1 1.20 S2 1.60 S3 2.00
+    [polo_norteMG, Algodao, 21, *]:= S1 1.00 S2 1.40 S3 1.80 [polo_norteMG, Algodao, 22, *]:= S1 1.10 S2 1.50 S3 1.90
+    [polo_norteMG, Algodao, 23, *]:= S1 1.20 S2 1.70 S3 2.10 [polo_norteMG, Algodao, 24, *]:= S1 1.30 S2 1.80 S3 2.20
+
+    [polo_norteMG, Macauba, 1, *]:= S1 2.00 S2 2.80 S3 3.40  [polo_norteMG, Macauba, 2, *]:= S1 2.10 S2 2.90 S3 3.50
+    [polo_norteMG, Macauba, 3, *]:= S1 2.40 S2 3.30 S3 4.00  [polo_norteMG, Macauba, 4, *]:= S1 3.00 S2 4.10 S3 4.90
+    [polo_norteMG, Macauba, 5, *]:= S1 3.10 S2 4.20 S3 5.00  [polo_norteMG, Macauba, 6, *]:= S1 2.70 S2 3.70 S3 4.40
+    [polo_norteMG, Macauba, 7, *]:= S1 2.20 S2 3.00 S3 3.60  [polo_norteMG, Macauba, 8, *]:= S1 1.80 S2 2.50 S3 3.00
+    [polo_norteMG, Macauba, 9, *]:= S1 1.60 S2 2.20 S3 2.70  [polo_norteMG, Macauba, 10, *]:= S1 1.70 S2 2.30 S3 2.80
+    [polo_norteMG, Macauba, 11, *]:= S1 1.90 S2 2.60 S3 3.10 [polo_norteMG, Macauba, 12, *]:= S1 2.00 S2 2.80 S3 3.40
+    [polo_norteMG, Macauba, 13, *]:= S1 2.10 S2 2.90 S3 3.50 [polo_norteMG, Macauba, 14, *]:= S1 2.20 S2 3.00 S3 3.60
+    [polo_norteMG, Macauba, 15, *]:= S1 2.50 S2 3.40 S3 4.10 [polo_norteMG, Macauba, 16, *]:= S1 3.20 S2 4.30 S3 5.10
+    [polo_norteMG, Macauba, 17, *]:= S1 3.30 S2 4.40 S3 5.20 [polo_norteMG, Macauba, 18, *]:= S1 2.80 S2 3.80 S3 4.50
+    [polo_norteMG, Macauba, 19, *]:= S1 2.30 S2 3.10 S3 3.70 [polo_norteMG, Macauba, 20, *]:= S1 1.90 S2 2.60 S3 3.10
+    [polo_norteMG, Macauba, 21, *]:= S1 1.70 S2 2.30 S3 2.80 [polo_norteMG, Macauba, 22, *]:= S1 1.80 S2 2.50 S3 3.00
+    [polo_norteMG, Macauba, 23, *]:= S1 2.00 S2 2.70 S3 3.30 [polo_norteMG, Macauba, 24, *]:= S1 2.10 S2 2.90 S3 3.40
+
+    [polo_norteMG, Girassol, 1, *]:= S1 0.80 S2 1.10 S3 1.40 [polo_norteMG, Girassol, 2, *]:= S1 0.90 S2 1.20 S3 1.50
+    [polo_norteMG, Girassol, 3, *]:= S1 1.10 S2 1.40 S3 1.80 [polo_norteMG, Girassol, 4, *]:= S1 1.40 S2 1.80 S3 2.20
+    [polo_norteMG, Girassol, 5, *]:= S1 1.50 S2 1.90 S3 2.30 [polo_norteMG, Girassol, 6, *]:= S1 1.30 S2 1.60 S3 2.00
+    [polo_norteMG, Girassol, 7, *]:= S1 1.00 S2 1.30 S3 1.60 [polo_norteMG, Girassol, 8, *]:= S1 0.80 S2 1.00 S3 1.30
+    [polo_norteMG, Girassol, 9, *]:= S1 0.70 S2 0.90 S3 1.20 [polo_norteMG, Girassol, 10, *]:= S1 0.70 S2 1.00 S3 1.30
+    [polo_norteMG, Girassol, 11, *]:= S1 0.80 S2 1.10 S3 1.40 [polo_norteMG, Girassol, 12, *]:= S1 0.80 S2 1.10 S3 1.40
+    [polo_norteMG, Girassol, 13, *]:= S1 0.90 S2 1.20 S3 1.50 [polo_norteMG, Girassol, 14, *]:= S1 1.00 S2 1.30 S3 1.60
+    [polo_norteMG, Girassol, 15, *]:= S1 1.20 S2 1.50 S3 1.90 [polo_norteMG, Girassol, 16, *]:= S1 1.50 S2 1.90 S3 2.30
+    [polo_norteMG, Girassol, 17, *]:= S1 1.60 S2 2.00 S3 2.40 [polo_norteMG, Girassol, 18, *]:= S1 1.30 S2 1.70 S3 2.10
+    [polo_norteMG, Girassol, 19, *]:= S1 1.10 S2 1.40 S3 1.70 [polo_norteMG, Girassol, 20, *]:= S1 0.90 S2 1.10 S3 1.40
+    [polo_norteMG, Girassol, 21, *]:= S1 0.80 S2 1.00 S3 1.30 [polo_norteMG, Girassol, 22, *]:= S1 0.80 S2 1.10 S3 1.40
+    [polo_norteMG, Girassol, 23, *]:= S1 0.90 S2 1.20 S3 1.50 [polo_norteMG, Girassol, 24, *]:= S1 1.00 S2 1.30 S3 1.60
+
+    [polo_norteMG, Nabo_Forrageiro, 1, *]:= S1 1.00 S2 1.40 S3 1.70 [polo_norteMG, Nabo_Forrageiro, 2, *]:= S1 1.10 S2 1.50 S3 1.80
+    [polo_norteMG, Nabo_Forrageiro, 3, *]:= S1 1.30 S2 1.80 S3 2.20 [polo_norteMG, Nabo_Forrageiro, 4, *]:= S1 1.60 S2 2.20 S3 2.70
+    [polo_norteMG, Nabo_Forrageiro, 5, *]:= S1 1.70 S2 2.30 S3 2.80 [polo_norteMG, Nabo_Forrageiro, 6, *]:= S1 1.50 S2 2.00 S3 2.40
+    [polo_norteMG, Nabo_Forrageiro, 7, *]:= S1 1.20 S2 1.60 S3 2.00 [polo_norteMG, Nabo_Forrageiro, 8, *]:= S1 0.90 S2 1.30 S3 1.60
+    [polo_norteMG, Nabo_Forrageiro, 9, *]:= S1 0.80 S2 1.10 S3 1.40 [polo_norteMG, Nabo_Forrageiro, 10, *]:= S1 0.90 S2 1.20 S3 1.50
+    [polo_norteMG, Nabo_Forrageiro, 11, *]:= S1 1.00 S2 1.30 S3 1.60 [polo_norteMG, Nabo_Forrageiro, 12, *]:= S1 1.00 S2 1.40 S3 1.70
+    [polo_norteMG, Nabo_Forrageiro, 13, *]:= S1 1.10 S2 1.50 S3 1.80 [polo_norteMG, Nabo_Forrageiro, 14, *]:= S1 1.20 S2 1.60 S3 1.90
+    [polo_norteMG, Nabo_Forrageiro, 15, *]:= S1 1.40 S2 1.90 S3 2.30 [polo_norteMG, Nabo_Forrageiro, 16, *]:= S1 1.70 S2 2.30 S3 2.80
+    [polo_norteMG, Nabo_Forrageiro, 17, *]:= S1 1.80 S2 2.40 S3 2.90 [polo_norteMG, Nabo_Forrageiro, 18, *]:= S1 1.50 S2 2.00 S3 2.50
+    [polo_norteMG, Nabo_Forrageiro, 19, *]:= S1 1.30 S2 1.70 S3 2.10 [polo_norteMG, Nabo_Forrageiro, 20, *]:= S1 1.00 S2 1.40 S3 1.70
+    [polo_norteMG, Nabo_Forrageiro, 21, *]:= S1 0.90 S2 1.20 S3 1.50 [polo_norteMG, Nabo_Forrageiro, 22, *]:= S1 1.00 S2 1.30 S3 1.60
+    [polo_norteMG, Nabo_Forrageiro, 23, *]:= S1 1.10 S2 1.50 S3 1.80 [polo_norteMG, Nabo_Forrageiro, 24, *]:= S1 1.20 S2 1.60 S3 1.90
+
+    # --- POLO SEMIÁRIDO (Soja e demais com produtividade menor por estresse hídrico) ---
+    [polo_semiarido, Soja, 1, *] := S1 1.10 S2 1.60 S3 2.10   [polo_semiarido, Soja, 2, *] := S1 1.20 S2 1.70 S3 2.20
+    [polo_semiarido, Soja, 3, *] := S1 1.50 S2 2.10 S3 2.60   [polo_semiarido, Soja, 4, *] := S1 1.90 S2 2.70 S3 3.30
+    [polo_semiarido, Soja, 5, *] := S1 2.00 S2 2.80 S3 3.40   [polo_semiarido, Soja, 6, *] := S1 1.70 S2 2.40 S3 3.00
+    [polo_semiarido, Soja, 7, *] := S1 1.40 S2 1.90 S3 2.40   [polo_semiarido, Soja, 8, *] := S1 1.10 S2 1.50 S3 1.90
+    [polo_semiarido, Soja, 9, *] := S1 0.90 S2 1.30 S3 1.70   [polo_semiarido, Soja, 10, *]:= S1 1.00 S2 1.40 S3 1.80
+    [polo_semiarido, Soja, 11, *]:= S1 1.10 S2 1.50 S3 1.90   [polo_semiarido, Soja, 12, *]:= S1 1.10 S2 1.60 S3 2.10
+    [polo_semiarido, Soja, 13, *]:= S1 1.20 S2 1.70 S3 2.20   [polo_semiarido, Soja, 14, *]:= S1 1.30 S2 1.80 S3 2.30
+    [polo_semiarido, Soja, 15, *]:= S1 1.60 S2 2.20 S3 2.70   [polo_semiarido, Soja, 16, *]:= S1 2.10 S2 2.90 S3 3.50
+    [polo_semiarido, Soja, 17, *]:= S1 2.20 S2 3.00 S3 3.60   [polo_semiarido, Soja, 18, *]:= S1 1.80 S2 2.50 S3 3.10
+    [polo_semiarido, Soja, 19, *]:= S1 1.40 S2 2.00 S3 2.50   [polo_semiarido, Soja, 20, *]:= S1 1.10 S2 1.60 S3 2.00
+    [polo_semiarido, Soja, 21, *]:= S1 1.00 S2 1.40 S3 1.80   [polo_semiarido, Soja, 22, *]:= S1 1.10 S2 1.50 S3 1.90
+    [polo_semiarido, Soja, 23, *]:= S1 1.20 S2 1.70 S3 2.10   [polo_semiarido, Soja, 24, *]:= S1 1.20 S2 1.70 S3 2.20
+
+    [polo_semiarido, Algodao, 1, *]:= S1 0.90 S2 1.30 S3 1.70 [polo_semiarido, Algodao, 2, *]:= S1 1.00 S2 1.40 S3 1.80
+    [polo_semiarido, Algodao, 3, *]:= S1 1.20 S2 1.60 S3 2.00 [polo_semiarido, Algodao, 4, *]:= S1 1.50 S2 2.10 S3 2.60
+    [polo_semiarido, Algodao, 5, *]:= S1 1.60 S2 2.20 S3 2.70 [polo_semiarido, Algodao, 6, *]:= S1 1.30 S2 1.80 S3 2.30
+    [polo_semiarido, Algodao, 7, *]:= S1 1.10 S2 1.50 S3 1.90 [polo_semiarido, Algodao, 8, *]:= S1 0.80 S2 1.10 S3 1.50
+    [polo_semiarido, Algodao, 9, *]:= S1 0.70 S2 1.00 S3 1.30 [polo_semiarido, Algodao, 10, *]:= S1 0.70 S2 1.00 S3 1.30
+    [polo_semiarido, Algodao, 11, *]:= S1 0.80 S2 1.10 S3 1.50 [polo_semiarido, Algodao, 12, *]:= S1 0.90 S2 1.30 S3 1.70
+    [polo_semiarido, Algodao, 13, *]:= S1 1.00 S2 1.40 S3 1.80 [polo_semiarido, Algodao, 14, *]:= S1 1.10 S2 1.50 S3 1.90
+    [polo_semiarido, Algodao, 15, *]:= S1 1.30 S2 1.70 S3 2.20 [polo_semiarido, Algodao, 16, *]:= S1 1.70 S2 2.30 S3 2.80
+    [polo_semiarido, Algodao, 17, *]:= S1 1.80 S2 2.40 S3 2.90 [polo_semiarido, Algodao, 18, *]:= S1 1.40 S2 1.90 S3 2.40
+    [polo_semiarido, Algodao, 19, *]:= S1 1.10 S2 1.60 S3 2.00 [polo_semiarido, Algodao, 20, *]:= S1 0.90 S2 1.20 S3 1.60
+    [polo_semiarido, Algodao, 21, *]:= S1 0.80 S2 1.10 S3 1.40 [polo_semiarido, Algodao, 22, *]:= S1 0.80 S2 1.10 S3 1.50
+    [polo_semiarido, Algodao, 23, *]:= S1 0.90 S2 1.30 S3 1.70 [polo_semiarido, Algodao, 24, *]:= S1 1.00 S2 1.40 S3 1.80
+
+    [polo_semiarido, Macauba, 1, *]:= S1 1.50 S2 2.10 S3 2.60  [polo_semiarido, Macauba, 2, *]:= S1 1.60 S2 2.20 S3 2.70
+    [polo_semiarido, Macauba, 3, *]:= S1 1.90 S2 2.60 S3 3.10  [polo_semiarido, Macauba, 4, *]:= S1 2.30 S2 3.20 S3 3.80
+    [polo_semiarido, Macauba, 5, *]:= S1 2.40 S2 3.30 S3 3.90  [polo_semiarido, Macauba, 6, *]:= S1 2.10 S2 2.90 S3 3.50
+    [polo_semiarido, Macauba, 7, *]:= S1 1.70 S2 2.30 S3 2.80  [polo_semiarido, Macauba, 8, *]:= S1 1.40 S2 1.90 S3 2.30
+    [polo_semiarido, Macauba, 9, *]:= S1 1.20 S2 1.70 S3 2.10  [polo_semiarido, Macauba, 10, *]:= S1 1.30 S2 1.80 S3 2.20
+    [polo_semiarido, Macauba, 11, *]:= S1 1.40 S2 2.00 S3 2.40 [polo_semiarido, Macauba, 12, *]:= S1 1.50 S2 2.10 S3 2.60
+    [polo_semiarido, Macauba, 13, *]:= S1 1.60 S2 2.20 S3 2.70 [polo_semiarido, Macauba, 14, *]:= S1 1.70 S2 2.30 S3 2.80
+    [polo_semiarido, Macauba, 15, *]:= S1 2.00 S2 2.70 S3 3.20 [polo_semiarido, Macauba, 16, *]:= S1 2.50 S2 3.40 S3 4.00
+    [polo_semiarido, Macauba, 17, *]:= S1 2.60 S2 3.50 S3 4.10 [polo_semiarido, Macauba, 18, *]:= S1 2.20 S2 3.00 S3 3.60
+    [polo_semiarido, Macauba, 19, *]:= S1 1.80 S2 2.40 S3 2.90 [polo_semiarido, Macauba, 20, *]:= S1 1.50 S2 2.00 S3 2.40
+    [polo_semiarido, Macauba, 21, *]:= S1 1.30 S2 1.80 S3 2.20 [polo_semiarido, Macauba, 22, *]:= S1 1.40 S2 1.90 S3 2.30
+    [polo_semiarido, Macauba, 23, *]:= S1 1.50 S2 2.10 S3 2.60 [polo_semiarido, Macauba, 24, *]:= S1 1.60 S2 2.20 S3 2.70
+
+    [polo_semiarido, Girassol, 1, *]:= S1 0.60 S2 0.90 S3 1.10 [polo_semiarido, Girassol, 2, *]:= S1 0.70 S2 1.00 S3 1.20
+    [polo_semiarido, Girassol, 3, *]:= S1 0.90 S2 1.20 S3 1.50 [polo_semiarido, Girassol, 4, *]:= S1 1.10 S2 1.50 S3 1.80
+    [polo_semiarido, Girassol, 5, *]:= S1 1.20 S2 1.60 S3 1.90 [polo_semiarido, Girassol, 6, *]:= S1 1.00 S2 1.30 S3 1.60
+    [polo_semiarido, Girassol, 7, *]:= S1 0.80 S2 1.10 S3 1.30 [polo_semiarido, Girassol, 8, *]:= S1 0.60 S2 0.80 S3 1.00
+    [polo_semiarido, Girassol, 9, *]:= S1 0.50 S2 0.70 S3 0.90 [polo_semiarido, Girassol, 10, *]:= S1 0.60 S2 0.80 S3 1.00
+    [polo_semiarido, Girassol, 11, *]:= S1 0.60 S2 0.90 S3 1.10 [polo_semiarido, Girassol, 12, *]:= S1 0.70 S2 0.90 S3 1.10
+    [polo_semiarido, Girassol, 13, *]:= S1 0.70 S2 1.00 S3 1.20 [polo_semiarido, Girassol, 14, *]:= S1 0.80 S2 1.10 S3 1.30
+    [polo_semiarido, Girassol, 15, *]:= S1 1.00 S2 1.30 S3 1.60 [polo_semiarido, Girassol, 16, *]:= S1 1.20 S2 1.60 S3 1.90
+    [polo_semiarido, Girassol, 17, *]:= S1 1.30 S2 1.70 S3 2.00 [polo_semiarido, Girassol, 18, *]:= S1 1.10 S2 1.40 S3 1.70
+    [polo_semiarido, Girassol, 19, *]:= S1 0.90 S2 1.20 S3 1.40 [polo_semiarido, Girassol, 20, *]:= S1 0.70 S2 1.00 S3 1.20
+    [polo_semiarido, Girassol, 21, *]:= S1 0.60 S2 0.80 S3 1.00 [polo_semiarido, Girassol, 22, *]:= S1 0.60 S2 0.90 S3 1.10
+    [polo_semiarido, Girassol, 23, *]:= S1 0.70 S2 1.00 S3 1.20 [polo_semiarido, Girassol, 24, *]:= S1 0.80 S2 1.10 S3 1.30
+
+    [polo_semiarido, Nabo_Forrageiro, 1, *]:= S1 0.70 S2 1.00 S3 1.30 [polo_semiarido, Nabo_Forrageiro, 2, *]:= S1 0.80 S2 1.10 S3 1.40
+    [polo_semiarido, Nabo_Forrageiro, 3, *]:= S1 1.00 S2 1.40 S3 1.70 [polo_semiarido, Nabo_Forrageiro, 4, *]:= S1 1.20 S2 1.70 S3 2.10
+    [polo_semiarido, Nabo_Forrageiro, 5, *]:= S1 1.30 S2 1.80 S3 2.20 [polo_semiarido, Nabo_Forrageiro, 6, *]:= S1 1.10 S2 1.50 S3 1.90
+    [polo_semiarido, Nabo_Forrageiro, 7, *]:= S1 0.90 S2 1.20 S3 1.50 [polo_semiarido, Nabo_Forrageiro, 8, *]:= S1 0.70 S2 1.00 S3 1.20
+    [polo_semiarido, Nabo_Forrageiro, 9, *]:= S1 0.60 S2 0.80 S3 1.10 [polo_semiarido, Nabo_Forrageiro, 10, *]:= S1 0.70 S2 0.90 S3 1.20
+    [polo_semiarido, Nabo_Forrageiro, 11, *]:= S1 0.70 S2 1.00 S3 1.30 [polo_semiarido, Nabo_Forrageiro, 12, *]:= S1 0.80 S2 1.10 S3 1.30
+    [polo_semiarido, Nabo_Forrageiro, 13, *]:= S1 0.80 S2 1.10 S3 1.40 [polo_semiarido, Nabo_Forrageiro, 14, *]:= S1 0.90 S2 1.20 S3 1.50
+    [polo_semiarido, Nabo_Forrageiro, 15, *]:= S1 1.10 S2 1.50 S3 1.80 [polo_semiarido, Nabo_Forrageiro, 16, *]:= S1 1.30 S2 1.80 S3 2.20
+    [polo_semiarido, Nabo_Forrageiro, 17, *]:= S1 1.40 S2 1.90 S3 2.30 [polo_semiarido, Nabo_Forrageiro, 18, *]:= S1 1.20 S2 1.60 S3 2.00
+    [polo_semiarido, Nabo_Forrageiro, 19, *]:= S1 1.00 S2 1.30 S3 1.60 [polo_semiarido, Nabo_Forrageiro, 20, *]:= S1 0.80 S2 1.10 S3 1.30
+    [polo_semiarido, Nabo_Forrageiro, 21, *]:= S1 0.70 S2 1.00 S3 1.20 [polo_semiarido, Nabo_Forrageiro, 22, *]:= S1 0.70 S2 1.00 S3 1.30
+    [polo_semiarido, Nabo_Forrageiro, 23, *]:= S1 0.80 S2 1.10 S3 1.40 [polo_semiarido, Nabo_Forrageiro, 24, *]:= S1 0.90 S2 1.20 S3 1.50;
+
+param AZ :=
+    [polo_norteMG, *]   := 1 12.0 2 12.0 3 12.0 4 12.0 5 12.0 6 12.0 7 12.0 8 12.0 9 12.0 10 12.0 11 12.0 12 12.0
+                           13 12.0 14 12.0 15 12.0 16 12.0 17 12.0 18 12.0 19 12.0 20 12.0 21 12.0 22 12.0 23 12.0 24 12.0
+    [polo_semiarido, *] := 1 15.0 2 15.0 3 15.0 4 15.0 5 15.0 6 15.0 7 15.0 8 15.0 9 15.0 10 15.0 11 15.0 12 15.0
+                           13 15.0 14 15.0 15 15.0 16 15.0 17 15.0 18 15.0 19 15.0 20 15.0 21 15.0 22 15.0 23 15.0 24 15.0;
+
+param Z_barra :=
+    [polo_norteMG, Soja, *]             := 1 2500 2 2500 3 2500 4 2500 5 2500 6 2500 7 2500 8 2500 9 2500 10 2500 11 2500 12 2500 13 3000 14 3000 15 3000 16 3000 17 3000 18 3000 19 3000 20 3000 21 3000 22 3000 23 3000 24 3000
+    [polo_norteMG, Algodao, *]          := 1 1000 2 1000 3 1000 4 1000 5 1000 6 1000 7 1000 8 1000 9 1000 10 1000 11 1000 12 1000 13 1200 14 1200 15 1200 16 1200 17 1200 18 1200 19 1200 20 1200 21 1200 22 1200 23 1200 24 1200
+    [polo_norteMG, Macauba, *]          := 1 500  2 500  3 500  4 500  5 500  6 500  7 500  8 500  9 500  10 500  11 500  12 500  13 600  14 600  15 600  16 600  17 600  18 600  19 600  20 600  21 600  22 600  23 600  24 600
+    [polo_norteMG, Girassol, *]         := 1 300  2 300  3 300  4 300  5 300  6 300  7 300  8 300  9 300  10 300  11 300  12 300  13 400  14 400  15 400  16 400  17 400  18 400  19 400  20 400  21 400  22 400  23 400  24 400
+    [polo_norteMG, Nabo_Forrageiro, *]  := 1 200  2 200  3 200  4 200  5 200  6 200  7 200  8 200  9 200  10 200  11 200  12 200  13 300  14 300  15 300  16 300  17 300  18 300  19 300  20 300  21 300  22 300  23 300  24 300
+
+    [polo_semiarido, Soja, *]           := 1 1600 2 1600 3 1600 4 1600 5 1600 6 1600 7 1600 8 1600 9 1600 10 1600 11 1600 12 1600 13 1800 14 1800 15 1800 16 1800 17 1800 18 1800 19 1800 20 1800 21 1800 22 1800 23 1800 24 1800
+    [polo_semiarido, Algodao, *]        := 1 700  2 700  3 700  4 700  5 700  6 700  7 700  8 700  9 700  10 700  11 700  12 700  13 800  14 800  15 800  16 800  17 800  18 800  19 800  20 800  21 800  22 800  23 800  24 800
+    [polo_semiarido, Macauba, *]        := 1 500  2 500  3 500  4 500  5 500  6 500  7 500  8 500  9 500  10 500  11 500  12 500  13 600  14 600  15 600  16 600  17 600  18 600  19 600  20 600  21 600  22 600  23 600  24 600
+    [polo_semiarido, Girassol, *]       := 1 250  2 250  3 250  4 250  5 250  6 250  7 250  8 250  9 250  10 250  11 250  12 250  13 300  14 300  15 300  16 300  17 300  18 300  19 300  20 300  21 300  22 300  23 300  24 300
+    [polo_semiarido, Nabo_Forrageiro, *]:= 1 250  2 250  3 250  4 250  5 250  6 250  7 250  8 250  9 250  10 250  11 250  12 250  13 300  14 300  15 300  16 300  17 300  18 300  19 300  20 300  21 300  22 300  23 300  24 300;
+
+param TF := 1 150 2 150 3 150 4 150 5 150 6 150 7 150 8 150 9 150 10 150 11 150 12 150
+            13 180 14 180 15 180 16 180 17 180 18 180 19 180 20 180 21 180 22 180 23 180 24 180;
+
+param OfertaOGR :=
+    [rede_catadores_moc, *] := 1 7000 2 7200 3 7500 4 8000 5 8200 6 7800 7 7300 8 7000 9 6800 10 6900 11 7100 12 7300
+                               13 7800 14 8000 15 8300 16 9000 17 9200 18 8600 19 8100 20 7700 21 7500 22 7600 23 7900 24 8100
+    [rede_urbana, *]        := 1 1500 2 1550 3 1600 4 1700 5 1750 6 1650 7 1550 8 1500 9 1450 10 1480 11 1520 12 1580
+                               13 1800 14 1850 15 1900 16 2100 17 2150 18 2000 19 1900 20 1800 21 1750 22 1780 23 1850 24 1900;
+
+param CompraMax := 1 1200 2 1220 3 1250 4 1300 5 1350 6 1300 7 1250 8 1200 9 1150 10 1180 11 1210 12 1250
+                   13 1500 14 1550 15 1600 16 1800 17 1850 18 1700 19 1600 20 1500 21 1450 22 1480 23 1550 24 1600;
+
+end;
