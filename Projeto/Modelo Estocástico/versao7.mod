@@ -61,14 +61,14 @@ var y_polo{P, T} binary;              # 1 se o polo agrícola p for aberto no pe
 var y_ogr{R, T} binary;               # 1 se a rede de OGR r for contratada no período t
 
 # VARIÁVEIS DE 2º ESTÁGIO (Decisões Operacionais por Cenário)
-var gx{P, M, T, S} >= 0;
-var ogr_x{R, T, S} >= 0;
-var w{M, T, S} >= 0;
-var v{T, S} >= 0;
-var estoque_semente{M, T, S} >= 0;
-var deficit{T, S} >= 0;
+var gx{P, M, T, S} >= 0;                    # Quantidade de sementes (t)
+var ogr_x{R, T, S} >= 0;                    # Volume de óleo adquirido de OGR 
+var w{M, T, S} >= 0;                        # Quantidade de matéria-prima esmagada/triturada (t)
+var v{T, S} >= 0;                           # Oléo comprado do mercado (terceiro/externo)
+var estoque_semente{M, T, S} >= 0;          # Estoque das sementes/matéria-prima
+var deficit{T, S} >= 0;                     # Perda de venda da demanda 
 # Variável para suprir o mínimo de OGR via matérias-primas vegetais se faltar OGR
-var sub_ogr{t in T, s in S} >= 0;
+var sub_ogr{t in T, s in S} >= 0;           #
 
 # FUNÇÃO OBJETIVO: Maximizar o Lucro Esperado ponderado por pi[s]
 maximize Lucro_Esperado:
