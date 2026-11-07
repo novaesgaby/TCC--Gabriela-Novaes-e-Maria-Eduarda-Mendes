@@ -67,8 +67,7 @@ var w{M, T, S} >= 0;                        # Quantidade de matéria-prima esmag
 var v{T, S} >= 0;                           # Oléo comprado do mercado (terceiro/externo)
 var estoque_semente{M, T, S} >= 0;          # Estoque das sementes/matéria-prima
 var deficit{T, S} >= 0;                     # Perda de venda da demanda 
-# Variável para suprir o mínimo de OGR via matérias-primas vegetais se faltar OGR
-var sub_ogr{t in T, s in S} >= 0;           #
+var sub_ogr{t in T, s in S} >= 0;           # Variável para suprir o mínimo de oléo OGR, caso falte OGR
 
 # FUNÇÃO OBJETIVO: Maximizar o Lucro Esperado ponderado por pi[s]
 maximize Lucro_Esperado:
