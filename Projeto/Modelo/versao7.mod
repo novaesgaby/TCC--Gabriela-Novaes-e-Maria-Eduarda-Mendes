@@ -1,16 +1,15 @@
 # ========================================================================================================================
-# MODELO DE OTIMIZAÇÃO DA CADEIA DE SUPRIMENTOS - PBIO (Modelo Determinístico)
+# MODELO DE OTIMIZAÇÃO DA CADEIA DE SUPRIMENTOS - PBIO (VERSÃO Determinística)
 # ========================================================================================================================
 
 # CONJUNTOS (Índices)
 
-set T;          # Períodos de tempo (1 a 24 meses)
+set T := 1..24; # Períodos de tempo (1 a 24 meses - S&OP)
 set P;          # Zonas produtoras de oleaginosas (Norte de MG e Semiárido)
 set R;          # Fontes de Óleos e Gorduras Residuais (OGR)
 set M;          # Matérias-primas / Oleaginosas (Soja, Algodão, Macaúba, Girassol, Nabo)
 
 # PARÂMETROS AGRÍCOLAS 
-
 param alfa{M};                     # Rendimento de óleo por matéria-prima
 param beta_trans := 0.02;          # Perda física no transporte (2%)
 param beta_arm   := 0.01;          # Perda física na armazenagem (1%)
@@ -46,25 +45,25 @@ param rend_glicerina;              # Rendimento do Coproduto de Glicerina
 param preco_carbono;               # Valor adquirido pelos créditos de descarbonização (bônus financeiro ambiental)
 
 # PARÂMETROS DE CUSTO OPERACIONAL [R$]
-param PC{P, M};                       # Custo de cultivo [R$/ha]
-param GTC{P};                         # Custo de transporte de grãos [R$/t]
-param CC;                             # Custo de esmagamento/processamento [R$/t]
-param C_OGR{R};                       # Custo de aquisição de OGR [R$/t]
-param Custo_Estoque_Semente{M};       # Custo de armazenagem de sementes [R$/t]
+param PC{P, M};                        # Custo de cultivo [R$/ha]
+param GTC{P};                          # Custo de transporte de grãos [R$/t]
+param CC;                              # Custo de esmagamento/processamento [R$/t]
+param C_OGR{R};                        # Custo de aquisição de OGR [R$/t]
+param Custo_Estoque_Semente{M};        # Custo de armazenagem de sementes [R$/t]
 param penalidade_deficit default preco_biodiesel * 1.2;  # Penalidade pelo não atendimento da demanda
 
-# VARIÁVEIS DE DECISÃO CONTÍNUAS E ESTRUTURAIS
-var z{P, M, T} >= 0;               # Área de terra alocada por matéria-prima [ha]
-var y_polo{P, T} binary;            # 1 se o polo agrícola p for aberto no período t
-var y_ogr{R, T} binary;             # 1 se a rede de OGR r for contratada no período t
+# VARIÁVEIS DE DECISÃO (Sem a dimensão de cenários)
+var z{P, M, T} >= 0;                   # Área de terra alocada por matéria-prima [ha]
+var y_polo{P, T} binary;               # 1 se o polo agrícola p for aberto no período t
+var y_ogr{R, T} binary;                # 1 se a rede de OGR r for contratada no período t
 
-var gx{P, M, T} >= 0;                     # Quantidade de sementes (t)
-var ogr_x{R, T} >= 0;                     # Volume de óleo adquirido de OGR 
-var w{M, T} >= 0;                         # Quantidade de matéria-prima esmagada/triturada (t)
-var v{T} >= 0;                            # Oléo comprado do mercado (terceiro/externo)
-var estoque_semente{M, T} >= 0;           # Estoque das sementes/matéria-prima
-var deficit{T} >= 0;                      # Perda de venda da demanda 
-var sub_ogr{t in T} >= 0;                 # Variável para suprir o mínimo de oléo OGR, caso falte OGR
+var gx{P, M, T} >= 0;                  # Quantidade de sementes (t)
+var ogr_x{R, T} >= 0;                  # Volume de óleo adquirido de OGR 
+var w{M, T} >= 0;                      # Quantidade de matéria-prima esmagada/triturada (t)
+var v{T} >= 0;                         # Oléo comprado do mercado (terceiro/externo)
+var estoque_semente{M, T} >= 0;        # Estoque das sementes/matéria-prima
+var deficit{T} >= 0;                   # Perda de venda da demanda 
+var sub_ogr{t in T} >= 0;              # Variável para suprir o mínimo de oléo OGR, caso falte OGR
 
 # FUNÇÃO OBJETIVO: Maximizar o Lucro Total Determinístico
 maximize Lucro_Total:
@@ -91,6 +90,8 @@ maximize Lucro_Total:
 #                                               RESTRIÇÕES DO SISTEMA
 # ====================================================================================================================================
 
+# ==================================================== RESTRIÇÕES ESTRUTURAIS ======================================================
+
 # Restrição (2) determina o limite da área agrícola. Só existe plantação se o polo estiver aberto
 # Se o modelo decidir não abrir o polo (y_polo[p,t] = 0), o limite de plantio é multiplicado por zero, forçando a área plantada (z) a ser 0. 
 # Se o polo estiver aberto (y_polo[p,t] = 1), a área plantada pode crescer até atingir o teto máximo de terra disponível (Z_barra).
@@ -105,6 +106,8 @@ s.t. Cumprimento_Selo_Social{t in T}:
     sum{p in P, m in M} (z[p,m,t] / AZ[p,t]) >= TF[t];
 # =====================================================================================================================================
 
+# ================================================== RESTRIÇÕES OPERACIONAIS ==========================================================
+
 # Restrição (4), atendimento da demanda. Garante que a soma do óleo extraído do esmagamento 
 # (descontada a perda industrial), do OGR processado, do óleo de terceiros e do eventual déficit atinja a demanda do período t.
 s.t. Atendimento_Demanda{t in T}:
@@ -117,16 +120,16 @@ s.t. Balanco_Massa_Agricola{p in P, m in M, t in T}:
     gx[p,m,t] = (1 - beta_trans) * gama[p,m,t] * z[p,m,t];
 # =====================================================================================================================================
 
-# Restrição (6), determina o balanço de estoque inicial no primeiro período para cada produto m.
-s.t. Balanco_Estoque_Inicial{m in M, t in T: t = 1}:
-    estoque_semente[m, t] = sum{p in P} gx[p, m, t] * (1 - beta_arm) - w[m, t];
+# Restrição (6), determina o balanço de estoque inicial no primeiro período (t = 1).
+s.t. Balanco_Estoque_Inicial{m in M}:
+    estoque_semente[m, 1] = sum{p in P} gx[p, m, 1] * (1 - beta_arm) - w[m, 1];
 # =====================================================================================================================================
 
 # Restrição (7), determina o balanço de massa subsequente (t > 1).
 s.t. Balanco_Estoque_Subsequente{m in M, t in T: t > 1}:
     estoque_semente[m, t] = estoque_semente[m, t-1] 
-                           + sum{p in P} gx[p, m, t] * (1 - beta_arm) 
-                           - w[m, t];
+                         + sum{p in P} gx[p, m, t] * (1 - beta_arm) 
+                         - w[m, t];
 # =====================================================================================================================================
 
 # Restrição (8), determina a capacidade industrial de esmagamento.
