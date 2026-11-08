@@ -4,7 +4,7 @@
 
 # CONJUNTOS (Índices)
 
-set T := 1..24; # Períodos de tempo (1 a 24 meses - S&OP)
+set T := 1..24; # Períodos de tempo 
 set P;          # Zonas produtoras de oleaginosas (Norte de MG e Semiárido)
 set R;          # Fontes de Óleos e Gorduras Residuais (OGR)
 set M;          # Matérias-primas / Oleaginosas (Soja, Algodão, Macaúba, Girassol, Nabo)
@@ -90,7 +90,6 @@ maximize Lucro_Total:
 #                                               RESTRIÇÕES DO SISTEMA
 # ====================================================================================================================================
 
-# ==================================================== RESTRIÇÕES ESTRUTURAIS ======================================================
 
 # Restrição (2) determina o limite da área agrícola. Só existe plantação se o polo estiver aberto
 # Se o modelo decidir não abrir o polo (y_polo[p,t] = 0), o limite de plantio é multiplicado por zero, forçando a área plantada (z) a ser 0. 
@@ -106,7 +105,6 @@ s.t. Cumprimento_Selo_Social{t in T}:
     sum{p in P, m in M} (z[p,m,t] / AZ[p,t]) >= TF[t];
 # =====================================================================================================================================
 
-# ================================================== RESTRIÇÕES OPERACIONAIS ==========================================================
 
 # Restrição (4), atendimento da demanda. Garante que a soma do óleo extraído do esmagamento 
 # (descontada a perda industrial), do OGR processado, do óleo de terceiros e do eventual déficit atinja a demanda do período t.
