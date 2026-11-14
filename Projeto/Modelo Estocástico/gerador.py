@@ -8,7 +8,7 @@ if not shutil.which("glpsol"):
     print("A instalar glpk-utils...")
     subprocess.run("apt-get install -y glpk-utils", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
-# 2. Escreve estritamente o seu modelo .mod oficial fornecido
+# 2. Escreve o modelo .mod estocastico
 codigo_mod_v7_estocastico = """
 # ========================================================================================================================
 # MODELO DE OTIMIZAÇÃO DA CADEIA DE SUPRIMENTOS - PBIO (VERSÃO 7 - Modelo Estocástico)
@@ -192,13 +192,13 @@ for i in range(1, 21):
         porte = "Grande"
         fator = 1.25
 
-    # Variação sutil exclusiva por instância para garantir soluções ótimas distintas
+    # Variação por instância para garantir soluções ótimas distintas
     f_estocastico = 1.0 + (i * 0.002)
 
     preco_bio = round(random.uniform(4400.0, 4600.0), 2)
     cap_usina = round(16362.0)
 
-    # Dicionários logísticos dimensionados pelo fator de porte
+    # Dimensionados pelo fator de porte
     d_descarga = {1:12000, 2:12000, 3:14000, 4:15000, 5:15000, 6:14000, 7:12000, 8:11000, 9:11000, 10:11000, 11:12000, 12:12000, 13:13000, 14:13000, 15:15000, 16:16000, 17:16000, 18:15000, 19:13000, 20:12000, 21:12000, 22:13000, 23:13000, 24:13000}
     d_armazenagem = {1:7500, 2:7500, 3:9000, 4:10000, 5:10000, 6:9000, 7:8000, 8:7500, 9:7500, 10:7500, 11:7500, 12:7500, 13:8000, 14:8000, 15:9500, 16:10500, 17:10500, 18:9500, 19:8500, 20:8000, 21:8000, 22:8000, 23:8000, 24:8000}
     d_carregamento = {1:11000, 2:11000, 3:12000, 4:13000, 5:13000, 6:12000, 7:11000, 8:11000, 9:11000, 10:11000, 11:11000, 12:11000, 13:12000, 14:12000, 15:13000, 16:14000, 17:14000, 18:13000, 19:12000, 20:12000, 21:12000, 22:12000, 23:12000, 24:12000}
@@ -240,7 +240,8 @@ for i in range(1, 21):
 
     gama_block = "\n".join(gama_lines)
 
-    conteudo_dat = f"""# =============================================================================================================
+    conteudo_dat = f"""
+# =============================================================================================================
 # SEÇÃO DE DADOS (DATA) - MODELO PBIO (VERSÃO 7 ESTOCÁSTICO) - Instância {i} ({porte})
 # =============================================================================================================
 
@@ -386,7 +387,7 @@ end;
         f.write(conteudo_dat)
 
     try:
-        # Executa o GLPK usando estritamente o modelo .mod e o .dat gerados
+        # Executa o GLPK usando o modelo .mod e o .dat gerados
         subprocess.run(["glpsol", "-m", "pbio_estocastico_v7.mod", "-d", dat_file, "-o", out_file],
                         check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
