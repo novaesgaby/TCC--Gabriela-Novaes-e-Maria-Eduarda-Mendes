@@ -8,7 +8,7 @@ if not shutil.which("glpsol"):
     print("A instalar glpk-utils...")
     subprocess.run("apt-get install -y glpk-utils", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
-# 2. Escreve estritamente o seu modelo .mod determinístico oficial
+# 2. Escreve o modelo .mod determinístico
 codigo_mod_deterministico = """
 # ========================================================================================================================
 # MODELO DE OTIMIZAÇÃO DA CADEIA DE SUPRIMENTOS - PBIO (VERSÃO Determinística)
@@ -167,7 +167,7 @@ for i in range(1, 21):
     cap_arm_str  = " ".join([f"{t} {int(val * fator)}" for t, val in d_armazenagem.items()])
     cap_carr_str = " ".join([f"{t} {int(val * fator)}" for t, val in d_carregamento.items()])
 
-    # Demanda determinística baseada no cenário S2 central
+    # Demanda determinística 
     demanda_base_det = {
         1: 8000, 2: 8150, 3: 8300, 4: 8500, 5: 8700, 6: 8400, 7: 8200, 8: 8000,
         9: 7900, 10: 8100, 11: 8300, 12: 8500, 13: 9200, 14: 9400, 15: 9700, 16: 10000,
@@ -195,7 +195,8 @@ for i in range(1, 21):
 
     gama_block = "\n".join(gama_lines)
 
-    conteudo_dat = f"""# =============================================================================================================
+    conteudo_dat = f"""
+# =============================================================================================================
 # SEÇÃO DE DADOS (DATA) - MODELO PBIO (VERSÃO Determinística) - Instância {i} ({porte})
 # =============================================================================================================
 
