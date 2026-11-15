@@ -115,7 +115,7 @@ s.t. Atendimento_Demanda{t in T}:
 # Restrição (5), determina o balanço de massa. Estabelece que o volume total de sementes transportados até a usina -
 # - corresponde a colheira bruta abatida da taxa de perda em transporte.
 s.t. Balanco_Massa_Agricola{p in P, m in M, t in T}:
-    gx[p,m,t] = (1 - beta_trans) * gama[p,m,t] * z[p,m,t];
+    gx[p,m,t] <= (1 - beta_trans) * gama[p,m,t] * z[p,m,t];
 # =====================================================================================================================================
 
 # Restrição (6), determina o balanço de estoque inicial no primeiro período (t = 1).
