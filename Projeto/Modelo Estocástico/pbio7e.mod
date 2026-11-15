@@ -55,10 +55,16 @@ param C_OGR{R};                       # Custo de aquisição de OGR [R$/t]
 param Custo_Estoque_Semente{M};       # Custo de armazenagem de sementes [R$/t]
 param penalidade_deficit default preco_biodiesel * 1.2;  # Penalidade pelo não atendimento da demanda
 
+# PARÂMETROS QUE RECEBEM A SOLUÇÃO DO MODELO DETERMINÍSTICO (MÉDIA)
+param z_det{P, M, T};
+param y_polo_det{P, T};
+param y_ogr_det{R, T};
+
 # VARIÁVEIS DE 1º ESTÁGIO (Decisões Estruturais)
 var z{P, M, T} >= 0;                  # Área de terra alocada por matéria-prima [ha]
 var y_polo{P, T} binary;              # 1 se o polo agrícola p for aberto no período t
 var y_ogr{R, T} binary;               # 1 se a rede de OGR r for contratada no período t
+
 
 # VARIÁVEIS DE 2º ESTÁGIO (Decisões Operacionais por Cenário)
 var gx{P, M, T, S} >= 0;                    # Quantidade de sementes (t)
@@ -112,6 +118,16 @@ s.t. Cumprimento_Selo_Social{t in T}:
     sum{p in P, m in M} (z[p,m,t] / AZ[p,t]) >= TF[t];
 # =====================================================================================================================================
 
+# TRAVA AS VARIÁVEIS DE 1º ESTÁGIO NA SOLUÇÃO MÉDIA DETERMINÍSTICA (PARA OBTER O EEV)
+s.t. Fixa_z{p in P, m in M, t in T}:
+    z[p,m,t] = z_det[p,m,t];
+
+s.t. Fixa_y_polo{p in P, t in T}:
+    y_polo[p,t] = y_polo_det[p,t];
+
+s.t. Fixa_y_ogr{r in R, t in T}:
+    y_ogr[r,t] = y_ogr_det[r,t];
+
 # ==================================== RESTRIÇÕES DE 2º ESTÁGIO (Replicadas para os 27 cenários) ======================================
 
 # Restrição (4), atendimento da demanda sob incerteza. Garante que a soma do óleo extraído do esmagamento 
@@ -123,7 +139,7 @@ s.t. Atendimento_Demanda{t in T, s in S}:
 # Restrição (5), determina o balanço de massa. Estabelece que o volume total de sementes transportados até a usina em cada cenário -
 # - corresponde a colheira bruta abatida da taxa de perda em transporte.
 s.t. Balanco_Massa_Agricola{p in P, m in M, t in T, s in S}:
-    gx[p,m,t,s] = (1 - beta_trans) * gama[p,m,t,s] * z[p,m,t];
+    gx[p,m,t,s] <= (1 - beta_trans) * gama[p,m,t,s] * z[p,m,t];
 # =====================================================================================================================================
 
 # Restrição (6), determina o balanço de estoque inicial no primeiro período (t = 1) para cada cenário s.
@@ -184,6 +200,7 @@ s.t. Limite_Frota_Caminhoes{t in T, s in S}:
 # Limita o volume total escoado de biodiesel expedido em carretas no carregamento da usina.
 s.t. Limite_Carregamento_Expedicao{t in T, s in S}:
     (sum{m in M} (alfa[m] * (1 - beta_proc) * w[m,t,s]) + sum{r in R} ogr_x[r,t,s] + v[t,s]) <= Cap_Carregamento[t];
+
 
 # =====================================================================================================================================
 # =====================================================================
