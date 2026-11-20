@@ -1,1 +1,350 @@
+# =============================================================================================================
+# SEÇÃO DE DADOS (DATA) - MODELO PBIO (VERSÃO 7 ESTOCÁSTICO) - Instância 20 (Grande)
+# =============================================================================================================
+
+data;
+
+set P := polo_norteMG polo_semiarido;
+set R := rede_catadores_moc rede_urbana;
+set M := Soja Algodao Macauba Girassol Nabo_Forrageiro;
+
+
+
+
+param alfa :=
+    Soja               0.18
+    Algodao            0.15
+    Macauba            0.28
+    Girassol           0.40
+    Nabo_Forrageiro    0.35;
+
+param preco_biodiesel := 4474.34;
+param preco_glicerina := 1200.0;
+param rend_glicerina  := 0.10;
+param preco_carbono   := 50.0;
+
+param preco_farelo :=
+    Soja               800.0
+    Algodao            650.0
+    Macauba            500.0
+    Girassol           700.0
+    Nabo_Forrageiro    600.0;
+
+param rend_farelo :=
+    Soja               0.75
+    Algodao            0.55
+    Macauba            0.50
+    Girassol           0.50
+    Nabo_Forrageiro    0.45;
+
+param CC := 45.0;
+param Capacidade_Usina := 16362;
+
+param Custo_Estoque_Semente :=
+    Soja               15.0
+    Algodao            12.0
+    Macauba            10.0
+    Girassol           14.0
+    Nabo_Forrageiro    11.0;
+
+param Custo_Fixo_Polo :=
+    polo_norteMG     500000.0
+    polo_semiarido   400000.0;
+
+param Custo_Fixo_OGR :=
+    rede_catadores_moc 150000.0
+    rede_urbana        200000.0;
+
+param Cap_Descarga :=
+    1 15000 2 15000 3 17500 4 18750 5 18750 6 17500 7 15000 8 13750 9 13750 10 13750 11 15000 12 15000 13 16250 14 16250 15 18750 16 20000 17 20000 18 18750 19 16250 20 15000 21 15000 22 16250 23 16250 24 16250;
+
+param Cap_Armazenagem :=
+    1 9375 2 9375 3 11250 4 12500 5 12500 6 11250 7 10000 8 9375 9 9375 10 9375 11 9375 12 9375 13 10000 14 10000 15 11875 16 13125 17 13125 18 11875 19 10625 20 10000 21 10000 22 10000 23 10000 24 10000;
+
+param Cap_Frota_Caminhoes :=
+    1 15000 2 15000 3 17500 4 18750 5 18750 6 17500 7 15000 8 13750 9 13750 10 13750 11 15000 12 15000 13 16250 14 16250 15 18750 16 20000 17 20000 18 18750 19 16250 20 15000 21 15000 22 16250 23 16250 24 16250;
+
+param Cap_Carregamento :=
+    1 13750 2 13750 3 15000 4 16250 5 16250 6 15000 7 13750 8 13750 9 13750 10 13750 11 13750 12 13750 13 15000 14 15000 15 16250 16 17500 17 17500 18 16250 19 15000 20 15000 21 15000 22 15000 23 15000 24 15000;
+
+param C_OGR := rede_catadores_moc 110.0 rede_urbana 125.0;
+
+param PC :=
+    [polo_norteMG, *]   := Soja 140.0 Algodao 160.0 Macauba 120.0 Girassol 150.0 Nabo_Forrageiro 130.0
+    [polo_semiarido, *] := Soja 155.0 Algodao 175.0 Macauba 135.0 Girassol 165.0 Nabo_Forrageiro 145.0;
+
+param GTC := polo_norteMG 18.0 polo_semiarido 25.0;
+
+param D :=
+    1 10744.5 2 10835.5 3 11115.0 4 11375.0 5 11609.0 6 11245.0 7 10985.0 8 10725.0 9 10491.0 10 10855.0 11 11063.0 12 11414.0 13 12298.0 14 12610.0 15 12948.0 16 13390.0 17 13026.0 18 12740.0 19 12454.0 20 12220.0 21 12324.0 22 12649.0 23 12818.0 24 13169.0;
+
+param v_cost := 1 409.0 2 419.0 3 387.0 4 367.0 5 357.0 6 377.0 7 399.0 8 428.0 9 465.0 10 495.0 11 475.0 12 438.0 13 426.0 14 436.0 15 399.0 16 379.0 17 369.0 18 389.0 19 416.0 20 448.0 21 485.0 22 505.0 23 465.0 24 436.0;
+
+param gama :=
+    [polo_norteMG, Soja, 1] 2.054
+    [polo_norteMG, Soja, 2] 1.792
+    [polo_norteMG, Soja, 3] 2.026
+    [polo_norteMG, Soja, 4] 2.506
+    [polo_norteMG, Soja, 5] 2.462
+    [polo_norteMG, Soja, 6] 2.136
+    [polo_norteMG, Soja, 7] 2.054
+    [polo_norteMG, Soja, 8] 2.167
+    [polo_norteMG, Soja, 9] 1.669
+    [polo_norteMG, Soja, 10] 2.198
+    [polo_norteMG, Soja, 11] 1.813
+    [polo_norteMG, Soja, 12] 1.782
+    [polo_norteMG, Soja, 13] 2.026
+    [polo_norteMG, Soja, 14] 2.208
+    [polo_norteMG, Soja, 15] 1.923
+    [polo_norteMG, Soja, 16] 2.421
+    [polo_norteMG, Soja, 17] 2.881
+    [polo_norteMG, Soja, 18] 2.221
+    [polo_norteMG, Soja, 19] 1.71
+    [polo_norteMG, Soja, 20] 1.651
+    [polo_norteMG, Soja, 21] 2.108
+    [polo_norteMG, Soja, 22] 1.497
+    [polo_norteMG, Soja, 23] 2.098
+    [polo_norteMG, Soja, 24] 1.995
+    [polo_norteMG, Algodao, 1] 1.679
+    [polo_norteMG, Algodao, 2] 1.895
+    [polo_norteMG, Algodao, 3] 1.895
+    [polo_norteMG, Algodao, 4] 2.819
+    [polo_norteMG, Algodao, 5] 2.077
+    [polo_norteMG, Algodao, 6] 1.964
+    [polo_norteMG, Algodao, 7] 1.741
+    [polo_norteMG, Algodao, 8] 1.579
+    [polo_norteMG, Algodao, 9] 1.751
+    [polo_norteMG, Algodao, 10] 1.913
+    [polo_norteMG, Algodao, 11] 1.651
+    [polo_norteMG, Algodao, 12] 2.077
+    [polo_norteMG, Algodao, 13] 1.556
+    [polo_norteMG, Algodao, 14] 1.782
+    [polo_norteMG, Algodao, 15] 2.167
+    [polo_norteMG, Algodao, 16] 2.637
+    [polo_norteMG, Algodao, 17] 2.627
+    [polo_norteMG, Algodao, 18] 2.696
+    [polo_norteMG, Algodao, 19] 1.61
+    [polo_norteMG, Algodao, 20] 2.098
+    [polo_norteMG, Algodao, 21] 1.995
+    [polo_norteMG, Algodao, 22] 1.913
+    [polo_norteMG, Algodao, 23] 2.149
+    [polo_norteMG, Algodao, 24] 1.923
+    [polo_norteMG, Macauba, 1] 1.71
+    [polo_norteMG, Macauba, 2] 2.026
+    [polo_norteMG, Macauba, 3] 1.913
+    [polo_norteMG, Macauba, 4] 2.005
+    [polo_norteMG, Macauba, 5] 1.985
+    [polo_norteMG, Macauba, 6] 2.668
+    [polo_norteMG, Macauba, 7] 1.741
+    [polo_norteMG, Macauba, 8] 2.077
+    [polo_norteMG, Macauba, 9] 1.792
+    [polo_norteMG, Macauba, 10] 2.126
+    [polo_norteMG, Macauba, 11] 2.126
+    [polo_norteMG, Macauba, 12] 1.651
+    [polo_norteMG, Macauba, 13] 1.964
+    [polo_norteMG, Macauba, 14] 1.923
+    [polo_norteMG, Macauba, 15] 1.497
+    [polo_norteMG, Macauba, 16] 2.678
+    [polo_norteMG, Macauba, 17] 2.29
+    [polo_norteMG, Macauba, 18] 2.221
+    [polo_norteMG, Macauba, 19] 1.507
+    [polo_norteMG, Macauba, 20] 1.882
+    [polo_norteMG, Macauba, 21] 1.597
+    [polo_norteMG, Macauba, 22] 1.851
+    [polo_norteMG, Macauba, 23] 1.638
+    [polo_norteMG, Macauba, 24] 1.528
+    [polo_norteMG, Girassol, 1] 2.026
+    [polo_norteMG, Girassol, 2] 1.769
+    [polo_norteMG, Girassol, 3] 1.813
+    [polo_norteMG, Girassol, 4] 2.493
+    [polo_norteMG, Girassol, 5] 2.411
+    [polo_norteMG, Girassol, 6] 2.136
+    [polo_norteMG, Girassol, 7] 1.7
+    [polo_norteMG, Girassol, 8] 1.782
+    [polo_norteMG, Girassol, 9] 1.579
+    [polo_norteMG, Girassol, 10] 1.538
+    [polo_norteMG, Girassol, 11] 1.913
+    [polo_norteMG, Girassol, 12] 1.528
+    [polo_norteMG, Girassol, 13] 1.782
+    [polo_norteMG, Girassol, 14] 1.538
+    [polo_norteMG, Girassol, 15] 1.851
+    [polo_norteMG, Girassol, 16] 2.678
+    [polo_norteMG, Girassol, 17] 2.054
+    [polo_norteMG, Girassol, 18] 2.054
+    [polo_norteMG, Girassol, 19] 1.895
+    [polo_norteMG, Girassol, 20] 1.841
+    [polo_norteMG, Girassol, 21] 1.964
+    [polo_norteMG, Girassol, 22] 1.628
+    [polo_norteMG, Girassol, 23] 1.936
+    [polo_norteMG, Girassol, 24] 2.026
+    [polo_norteMG, Nabo_Forrageiro, 1] 1.669
+    [polo_norteMG, Nabo_Forrageiro, 2] 1.538
+    [polo_norteMG, Nabo_Forrageiro, 3] 2.054
+    [polo_norteMG, Nabo_Forrageiro, 4] 2.239
+    [polo_norteMG, Nabo_Forrageiro, 5] 2.819
+    [polo_norteMG, Nabo_Forrageiro, 6] 2.005
+    [polo_norteMG, Nabo_Forrageiro, 7] 1.985
+    [polo_norteMG, Nabo_Forrageiro, 8] 1.792
+    [polo_norteMG, Nabo_Forrageiro, 9] 1.741
+    [polo_norteMG, Nabo_Forrageiro, 10] 1.72
+    [polo_norteMG, Nabo_Forrageiro, 11] 1.923
+    [polo_norteMG, Nabo_Forrageiro, 12] 1.497
+    [polo_norteMG, Nabo_Forrageiro, 13] 1.71
+    [polo_norteMG, Nabo_Forrageiro, 14] 2.208
+    [polo_norteMG, Nabo_Forrageiro, 15] 1.936
+    [polo_norteMG, Nabo_Forrageiro, 16] 2.881
+    [polo_norteMG, Nabo_Forrageiro, 17] 2.352
+    [polo_norteMG, Nabo_Forrageiro, 18] 2.067
+    [polo_norteMG, Nabo_Forrageiro, 19] 1.507
+    [polo_norteMG, Nabo_Forrageiro, 20] 2.098
+    [polo_norteMG, Nabo_Forrageiro, 21] 1.628
+    [polo_norteMG, Nabo_Forrageiro, 22] 1.751
+    [polo_norteMG, Nabo_Forrageiro, 23] 2.036
+    [polo_norteMG, Nabo_Forrageiro, 24] 2.108
+    [polo_semiarido, Soja, 1] 1.322
+    [polo_semiarido, Soja, 2] 1.294
+    [polo_semiarido, Soja, 3] 1.851
+    [polo_semiarido, Soja, 4] 2.393
+    [polo_semiarido, Soja, 5] 2.352
+    [polo_semiarido, Soja, 6] 2.311
+    [polo_semiarido, Soja, 7] 1.271
+    [polo_semiarido, Soja, 8] 1.7
+    [polo_semiarido, Soja, 9] 1.322
+    [polo_semiarido, Soja, 10] 1.538
+    [polo_semiarido, Soja, 11] 1.271
+    [polo_semiarido, Soja, 12] 1.394
+    [polo_semiarido, Soja, 13] 1.597
+    [polo_semiarido, Soja, 14] 1.384
+    [polo_semiarido, Soja, 15] 1.597
+    [polo_semiarido, Soja, 16] 1.851
+    [polo_semiarido, Soja, 17] 2.036
+    [polo_semiarido, Soja, 18] 2.239
+    [polo_semiarido, Soja, 19] 1.353
+    [polo_semiarido, Soja, 20] 1.7
+    [polo_semiarido, Soja, 21] 1.271
+    [polo_semiarido, Soja, 22] 1.628
+    [polo_semiarido, Soja, 23] 1.679
+    [polo_semiarido, Soja, 24] 1.281
+    [polo_semiarido, Algodao, 1] 1.366
+    [polo_semiarido, Algodao, 2] 1.435
+    [polo_semiarido, Algodao, 3] 1.751
+    [polo_semiarido, Algodao, 4] 2.136
+    [polo_semiarido, Algodao, 5] 1.679
+    [polo_semiarido, Algodao, 6] 2.18
+    [polo_semiarido, Algodao, 7] 1.271
+    [polo_semiarido, Algodao, 8] 1.507
+    [polo_semiarido, Algodao, 9] 1.425
+    [polo_semiarido, Algodao, 10] 1.792
+    [polo_semiarido, Algodao, 11] 1.679
+    [polo_semiarido, Algodao, 12] 1.813
+    [polo_semiarido, Algodao, 13] 1.271
+    [polo_semiarido, Algodao, 14] 1.813
+    [polo_semiarido, Algodao, 15] 1.669
+    [polo_semiarido, Algodao, 16] 1.823
+    [polo_semiarido, Algodao, 17] 1.954
+    [polo_semiarido, Algodao, 18] 2.434
+    [polo_semiarido, Algodao, 19] 1.322
+    [polo_semiarido, Algodao, 20] 1.456
+    [polo_semiarido, Algodao, 21] 1.813
+    [polo_semiarido, Algodao, 22] 1.597
+    [polo_semiarido, Algodao, 23] 1.384
+    [polo_semiarido, Algodao, 24] 1.579
+    [polo_semiarido, Macauba, 1] 1.556
+    [polo_semiarido, Macauba, 2] 1.841
+    [polo_semiarido, Macauba, 3] 1.271
+    [polo_semiarido, Macauba, 4] 1.841
+    [polo_semiarido, Macauba, 5] 2.067
+    [polo_semiarido, Macauba, 6] 1.913
+    [polo_semiarido, Macauba, 7] 1.507
+    [polo_semiarido, Macauba, 8] 1.353
+    [polo_semiarido, Macauba, 9] 1.484
+    [polo_semiarido, Macauba, 10] 1.484
+    [polo_semiarido, Macauba, 11] 1.651
+    [polo_semiarido, Macauba, 12] 1.415
+    [polo_semiarido, Macauba, 13] 1.882
+    [polo_semiarido, Macauba, 14] 1.579
+    [polo_semiarido, Macauba, 15] 1.769
+    [polo_semiarido, Macauba, 16] 2.149
+    [polo_semiarido, Macauba, 17] 2.352
+    [polo_semiarido, Macauba, 18] 2.362
+    [polo_semiarido, Macauba, 19] 1.769
+    [polo_semiarido, Macauba, 20] 1.281
+    [polo_semiarido, Macauba, 21] 1.61
+    [polo_semiarido, Macauba, 22] 1.435
+    [polo_semiarido, Macauba, 23] 1.353
+    [polo_semiarido, Macauba, 24] 1.823
+    [polo_semiarido, Girassol, 1] 1.669
+    [polo_semiarido, Girassol, 2] 1.312
+    [polo_semiarido, Girassol, 3] 1.497
+    [polo_semiarido, Girassol, 4] 2.421
+    [polo_semiarido, Girassol, 5] 2.136
+    [polo_semiarido, Girassol, 6] 2.149
+    [polo_semiarido, Girassol, 7] 1.394
+    [polo_semiarido, Girassol, 8] 1.415
+    [polo_semiarido, Girassol, 9] 1.353
+    [polo_semiarido, Girassol, 10] 1.864
+    [polo_semiarido, Girassol, 11] 1.841
+    [polo_semiarido, Girassol, 12] 1.466
+    [polo_semiarido, Girassol, 13] 1.597
+    [polo_semiarido, Girassol, 14] 1.394
+    [polo_semiarido, Girassol, 15] 1.353
+    [polo_semiarido, Girassol, 16] 2.077
+    [polo_semiarido, Girassol, 17] 2.29
+    [polo_semiarido, Girassol, 18] 2.342
+    [polo_semiarido, Girassol, 19] 1.456
+    [polo_semiarido, Girassol, 20] 1.71
+    [polo_semiarido, Girassol, 21] 1.597
+    [polo_semiarido, Girassol, 22] 1.343
+    [polo_semiarido, Girassol, 23] 1.882
+    [polo_semiarido, Girassol, 24] 1.882
+    [polo_semiarido, Nabo_Forrageiro, 1] 1.353
+    [polo_semiarido, Nabo_Forrageiro, 2] 1.851
+    [polo_semiarido, Nabo_Forrageiro, 3] 1.841
+    [polo_semiarido, Nabo_Forrageiro, 4] 1.895
+    [polo_semiarido, Nabo_Forrageiro, 5] 2.098
+    [polo_semiarido, Nabo_Forrageiro, 6] 2.411
+    [polo_semiarido, Nabo_Forrageiro, 7] 1.343
+    [polo_semiarido, Nabo_Forrageiro, 8] 1.456
+    [polo_semiarido, Nabo_Forrageiro, 9] 1.813
+    [polo_semiarido, Nabo_Forrageiro, 10] 1.72
+    [polo_semiarido, Nabo_Forrageiro, 11] 1.741
+    [polo_semiarido, Nabo_Forrageiro, 12] 1.813
+    [polo_semiarido, Nabo_Forrageiro, 13] 1.528
+    [polo_semiarido, Nabo_Forrageiro, 14] 1.528
+    [polo_semiarido, Nabo_Forrageiro, 15] 1.538
+    [polo_semiarido, Nabo_Forrageiro, 16] 2.411
+    [polo_semiarido, Nabo_Forrageiro, 17] 2.362
+    [polo_semiarido, Nabo_Forrageiro, 18] 2.411
+    [polo_semiarido, Nabo_Forrageiro, 19] 1.435
+    [polo_semiarido, Nabo_Forrageiro, 20] 1.751
+    [polo_semiarido, Nabo_Forrageiro, 21] 1.322
+    [polo_semiarido, Nabo_Forrageiro, 22] 1.384
+    [polo_semiarido, Nabo_Forrageiro, 23] 1.741
+    [polo_semiarido, Nabo_Forrageiro, 24] 1.638;
+
+param AZ :=
+    [polo_norteMG, *]   := 1 12.0 2 12.0 3 12.0 4 12.0 5 12.0 6 12.0 7 12.0 8 12.0 9 12.0 10 12.0 11 12.0 12 12.0 13 12.0 14 12.0 15 12.0 16 12.0 17 12.0 18 12.0 19 12.0 20 12.0 21 12.0 22 12.0 23 12.0 24 12.0
+    [polo_semiarido, *] := 1 15.0 2 15.0 3 15.0 4 15.0 5 15.0 6 15.0 7 15.0 8 15.0 9 15.0 10 15.0 11 15.0 12 15.0 13 15.0 14 15.0 15 15.0 16 15.0 17 15.0 18 15.0 19 15.0 20 15.0 21 15.0 22 15.0 23 15.0 24 15.0;
+
+param Z_barra :=
+    [polo_norteMG, Soja, *]              := 1 3125 2 3125 3 3125 4 3125 5 3125 6 3125 7 3125 8 3125 9 3125 10 3125 11 3125 12 3125 13 3125 14 3125 15 3125 16 3125 17 3125 18 3125 19 3125 20 3125 21 3125 22 3125 23 3125 24 3125
+    [polo_norteMG, Algodao, *]          := 1 1250 2 1250 3 1250 4 1250 5 1250 6 1250 7 1250 8 1250 9 1250 10 1250 11 1250 12 1250 13 1250 14 1250 15 1250 16 1250 17 1250 18 1250 19 1250 20 1250 21 1250 22 1250 23 1250 24 1250
+    [polo_norteMG, Macauba, *]          := 1 625 2 625 3 625 4 625 5 625 6 625 7 625 8 625 9 625 10 625 11 625 12 625 13 625 14 625 15 625 16 625 17 625 18 625 19 625 20 625 21 625 22 625 23 625 24 625
+    [polo_norteMG, Girassol, *]         := 1 375 2 375 3 375 4 375 5 375 6 375 7 375 8 375 9 375 10 375 11 375 12 375 13 375 14 375 15 375 16 375 17 375 18 375 19 375 20 375 21 375 22 375 23 375 24 375
+    [polo_norteMG, Nabo_Forrageiro, *]  := 1 250 2 250 3 250 4 250 5 250 6 250 7 250 8 250 9 250 10 250 11 250 12 250 13 250 14 250 15 250 16 250 17 250 18 250 19 250 20 250 21 250 22 250 23 250 24 250
+    [polo_semiarido, Soja, *]           := 1 2000 2 2000 3 2000 4 2000 5 2000 6 2000 7 2000 8 2000 9 2000 10 2000 11 2000 12 2000 13 2000 14 2000 15 2000 16 2000 17 2000 18 2000 19 2000 20 2000 21 2000 22 2000 23 2000 24 2000
+    [polo_semiarido, Algodao, *]        := 1 875 2 875 3 875 4 875 5 875 6 875 7 875 8 875 9 875 10 875 11 875 12 875 13 875 14 875 15 875 16 875 17 875 18 875 19 875 20 875 21 875 22 875 23 875 24 875
+    [polo_semiarido, Macauba, *]        := 1 625 2 625 3 625 4 625 5 625 6 625 7 625 8 625 9 625 10 625 11 625 12 625 13 625 14 625 15 625 16 625 17 625 18 625 19 625 20 625 21 625 22 625 23 625 24 625
+    [polo_semiarido, Girassol, *]       := 1 312 2 312 3 312 4 312 5 312 6 312 7 312 8 312 9 312 10 312 11 312 12 312 13 312 14 312 15 312 16 312 17 312 18 312 19 312 20 312 21 312 22 312 23 312 24 312
+    [polo_semiarido, Nabo_Forrageiro, *]:= 1 312 2 312 3 312 4 312 5 312 6 312 7 312 8 312 9 312 10 312 11 312 12 312 13 312 14 312 15 312 16 312 17 312 18 312 19 312 20 312 21 312 22 312 23 312 24 312;
+
+param TF := 1 150 2 150 3 150 4 150 5 150 6 150 7 150 8 150 9 150 10 150 11 150 12 150 13 180 14 180 15 180 16 180 17 180 18 180 19 180 20 180 21 180 22 180 23 180 24 180;
+
+param OfertaOGR :=
+    [rede_catadores_moc, *] := 1 8750 2 9000 3 9375 4 10000 5 10250 6 9750 7 9125 8 8750 9 8500 10 8625 11 8875 12 9125 13 9750 14 10000 15 10375 16 11250 17 11500 18 10750 19 10125 20 9625 21 9375 22 9500 23 9875 24 10125
+    [rede_urbana, *]        := 1 1875 2 1937 3 2000 4 2125 5 2187 6 2062 7 1937 8 1875 9 1812 10 1850 11 1900 12 1975 13 2250 14 2312 15 2375 16 2625 17 2687 18 2500 19 2375 20 2250 21 2187 22 2225 23 2312 24 2375;
+
+param CompraMax := 1 1500 2 1525 3 1562 4 1625 5 1687 6 1625 7 1562 8 1500 9 1437 10 1475 11 1512 12 1562 13 1875 14 1937 15 2000 16 2250 17 2312 18 2125 19 2000 20 1875 21 1812 22 1850 23 1937 24 2000;
+
+end;
 
